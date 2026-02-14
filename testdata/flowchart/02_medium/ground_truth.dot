@@ -1,0 +1,27 @@
+digraph SupportTicket {
+    rankdir=TB;
+    node [fontname="Arial"];
+
+    start [shape=ellipse, label="Ticket\neingegangen"];
+    classify [shape=box, label="Ticket\nklassifizieren"];
+    severity [shape=diamond, label="Schweregrad?"];
+    l1 [shape=box, label="L1 Support\nbearbeitet"];
+    l2 [shape=box, label="L2 Support\nbearbeitet"];
+    escalate [shape=box, label="Eskalation an\nEntwicklung"];
+    resolved_check [shape=diamond, label="Problem\ngelöst?"];
+    feedback [shape=box, label="Rückfrage\nan Kunde"];
+    close [shape=box, label="Ticket\nschließen"];
+    done [shape=ellipse, label="Abgeschlossen"];
+
+    start -> classify;
+    classify -> severity;
+    severity -> l1 [label="niedrig"];
+    severity -> l2 [label="mittel"];
+    severity -> escalate [label="hoch"];
+    l1 -> resolved_check;
+    l2 -> resolved_check;
+    resolved_check -> close [label="ja"];
+    resolved_check -> feedback [label="nein"];
+    feedback -> classify;
+    close -> done;
+}

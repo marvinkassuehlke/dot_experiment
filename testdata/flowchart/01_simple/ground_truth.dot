@@ -1,0 +1,20 @@
+digraph Kundenbestellung {
+    rankdir=TB;
+    node [fontname="Arial"];
+
+    start [shape=ellipse, label="Bestellung\neingang"];
+    check [shape=diamond, label="Lager\nausreichend?"];
+    pick [shape=box, label="Ware\nkommissionieren"];
+    reorder [shape=box, label="Nachbestellung\nauslösen"];
+    wait [shape=box, label="Ware\nentgegennehmen"];
+    pack [shape=box, label="Verpacken &\nVersand"];
+    done [shape=ellipse, label="Bestellung\nabgeschlossen"];
+
+    start -> check;
+    check -> pick [label="ja"];
+    check -> reorder [label="nein"];
+    reorder -> wait;
+    wait -> pick;
+    pick -> pack;
+    pack -> done;
+}

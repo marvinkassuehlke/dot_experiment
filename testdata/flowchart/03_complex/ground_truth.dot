@@ -1,0 +1,39 @@
+digraph Kreditantrag {
+    rankdir=TB;
+    node [fontname="Arial"];
+
+    start [shape=ellipse, label="Antrag\neingegangen"];
+    docs [shape=box, label="Unterlagen\nprüfen"];
+    complete [shape=diamond, label="Unterlagen\nvollständig?"];
+    request_docs [shape=box, label="Unterlagen\nnachfordern"];
+
+    schufa [shape=box, label="Schufa-\nAuskunft"];
+    income [shape=box, label="Einkommens-\nprüfung"];
+    collateral [shape=box, label="Sicherheiten-\nbewertung"];
+
+    merge [shape=diamond, label="Alle Prüfungen\nbestanden?"];
+    approve [shape=box, label="Kredit\ngenehmigen"];
+    reject [shape=box, label="Kredit\nablehnen"];
+    review [shape=box, label="Nochmalige\nPrüfung"];
+    review_check [shape=diamond, label="Ergebnis\nanders?"];
+
+    done_yes [shape=ellipse, label="Genehmigt"];
+    done_no [shape=ellipse, label="Abgelehnt"];
+
+    start -> docs;
+    docs -> complete;
+    complete -> request_docs [label="nein"];
+    request_docs -> docs;
+    complete -> schufa [label="ja"];
+    complete -> income [label="ja"];
+    complete -> collateral [label="ja"];
+    schufa -> merge;
+    income -> merge;
+    collateral -> merge;
+    merge -> approve [label="ja"];
+    merge -> reject [label="nein"];
+    reject -> review;
+    review -> review_check;
+    review_check -> review [label="nein"];
+    approve -> done_yes;
+}

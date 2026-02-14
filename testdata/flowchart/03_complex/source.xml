@@ -1,0 +1,107 @@
+<mxGraphModel dx="1522" dy="962" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+    <mxCell id="start" value="Antrag&#xa;eingegangen" style="ellipse;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="354" y="40" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="docs" value="Unterlagen&#xa;prüfen" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="354" y="150" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="complete" value="Unterlagen&#xa;vollständig?" style="rhombus;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="334" y="260" width="160" height="100" as="geometry"/>
+    </mxCell>
+    <mxCell id="request_docs" value="Unterlagen&#xa;nachfordern" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="574" y="270" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="schufa" value="Schufa-&#xa;Auskunft" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="134" y="430" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="income" value="Einkommens-&#xa;prüfung" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="354" y="430" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="collateral" value="Sicherheiten-&#xa;bewertung" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="574" y="430" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="merge" value="Alle Prüfungen&#xa;bestanden?" style="rhombus;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="334" y="560" width="160" height="100" as="geometry"/>
+    </mxCell>
+    <mxCell id="approve" value="Kredit&#xa;genehmigen" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="174" y="720" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="reject" value="Kredit&#xa;ablehnen" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="504" y="720" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="review" value="Nochmalige&#xa;Prüfung" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="504" y="840" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="review_check" value="Ergebnis&#xa;anders?" style="rhombus;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="484" y="960" width="160" height="100" as="geometry"/>
+    </mxCell>
+    <mxCell id="done_yes" value="Genehmigt" style="ellipse;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="174" y="840" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="done_no" value="Abgelehnt" style="ellipse;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="694" y="960" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="start" target="docs" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="docs" target="complete" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e3" value="nein" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="complete" target="request_docs" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="request_docs" target="docs" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="720" y="300"/>
+          <mxPoint x="720" y="130"/>
+          <mxPoint x="414" y="130"/>
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="e5" value="ja" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="complete" target="schufa" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e6" value="ja" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="complete" target="income" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e7" value="ja" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="complete" target="collateral" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="schufa" target="merge" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="income" target="merge" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="collateral" target="merge" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e11" value="ja" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="merge" target="approve" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e12" value="nein" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="merge" target="reject" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="reject" target="review" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e14" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="review" target="review_check" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e15" value="nein" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="review_check" target="review" parent="1">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="440" y="1010"/>
+          <mxPoint x="440" y="870"/>
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="e16" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="approve" target="done_yes" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+  </root>
+</mxGraphModel>
