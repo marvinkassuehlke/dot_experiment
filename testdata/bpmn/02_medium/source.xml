@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                   id="Definitions_1"
+                   targetNamespace="http://example.com/bpmn/rechnungsfreigabe">
+
+  <bpmn2:collaboration id="Collaboration_1">
+    <bpmn2:participant id="Participant_Pool" name="Rechnungsfreigabe" processRef="Process_Rechnungsfreigabe"/>
+  </bpmn2:collaboration>
+
+  <bpmn2:process id="Process_Rechnungsfreigabe" name="Rechnungsfreigabe" isExecutable="false">
+
+    <bpmn2:laneSet id="LaneSet_1">
+      <bpmn2:lane id="Lane_Buchhaltung" name="Buchhaltung">
+        <bpmn2:flowNodeRef>StartEvent_1</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Task_Erfassen</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Gateway_XOR_Betrag</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Task_AutoFreigabe</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Gateway_Parallel_Split</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Task_Buchung</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Task_Archiv</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Gateway_Parallel_Join</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>Task_Zahlung</bpmn2:flowNodeRef>
+        <bpmn2:flowNodeRef>EndEvent_1</bpmn2:flowNodeRef>
+      </bpmn2:lane>
+      <bpmn2:lane id="Lane_Abteilungsleiter" name="Abteilungsleiter">
+        <!-- Intentionally empty — missing "nein" path target -->
+      </bpmn2:lane>
+      <bpmn2:lane id="Lane_Geschaeftsfuehrung" name="Geschäftsführung">
+        <!-- Intentionally empty — unreachable due to missing XOR branch -->
+      </bpmn2:lane>
+    </bpmn2:laneSet>
+
+    <bpmn2:startEvent id="StartEvent_1" name="Start">
+      <bpmn2:outgoing>Flow_1</bpmn2:outgoing>
+    </bpmn2:startEvent>
+
+    <bpmn2:task id="Task_Erfassen" name="Rechnung erfassen">
+      <bpmn2:incoming>Flow_1</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_2</bpmn2:outgoing>
+    </bpmn2:task>
+
+    <!-- DEFECT: XOR Gateway with only ONE outgoing sequence flow -->
+    <!-- Missing: "nein" path for Betrag >= 1000 (manual review) -->
+    <bpmn2:exclusiveGateway id="Gateway_XOR_Betrag" name="Betrag &lt; 1000?">
+      <bpmn2:incoming>Flow_2</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_3_ja</bpmn2:outgoing>
+      <!-- Missing: <bpmn2:outgoing>Flow_3_nein</bpmn2:outgoing> -->
+    </bpmn2:exclusiveGateway>
+
+    <bpmn2:task id="Task_AutoFreigabe" name="Automatische Freigabe">
+      <bpmn2:incoming>Flow_3_ja</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_4</bpmn2:outgoing>
+    </bpmn2:task>
+
+    <bpmn2:parallelGateway id="Gateway_Parallel_Split" name="AND (Split)">
+      <bpmn2:incoming>Flow_4</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_5a</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_5b</bpmn2:outgoing>
+    </bpmn2:parallelGateway>
+
+    <bpmn2:task id="Task_Buchung" name="Buchung erstellen">
+      <bpmn2:incoming>Flow_5a</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_6a</bpmn2:outgoing>
+    </bpmn2:task>
+
+    <bpmn2:task id="Task_Archiv" name="Beleg archivieren">
+      <bpmn2:incoming>Flow_5b</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_6b</bpmn2:outgoing>
+    </bpmn2:task>
+
+    <bpmn2:parallelGateway id="Gateway_Parallel_Join" name="AND (Join)">
+      <bpmn2:incoming>Flow_6a</bpmn2:incoming>
+      <bpmn2:incoming>Flow_6b</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_7</bpmn2:outgoing>
+    </bpmn2:parallelGateway>
+
+    <bpmn2:task id="Task_Zahlung" name="Zahlung veranlassen">
+      <bpmn2:incoming>Flow_7</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_8</bpmn2:outgoing>
+    </bpmn2:task>
+
+    <bpmn2:endEvent id="EndEvent_1" name="Ende">
+      <bpmn2:incoming>Flow_8</bpmn2:incoming>
+    </bpmn2:endEvent>
+
+    <!-- Sequence Flows -->
+    <bpmn2:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Task_Erfassen"/>
+    <bpmn2:sequenceFlow id="Flow_2" sourceRef="Task_Erfassen" targetRef="Gateway_XOR_Betrag"/>
+    <bpmn2:sequenceFlow id="Flow_3_ja" name="ja" sourceRef="Gateway_XOR_Betrag" targetRef="Task_AutoFreigabe"/>
+    <!-- DEFECT: No Flow_3_nein sequence flow defined -->
+    <bpmn2:sequenceFlow id="Flow_4" sourceRef="Task_AutoFreigabe" targetRef="Gateway_Parallel_Split"/>
+    <bpmn2:sequenceFlow id="Flow_5a" sourceRef="Gateway_Parallel_Split" targetRef="Task_Buchung"/>
+    <bpmn2:sequenceFlow id="Flow_5b" sourceRef="Gateway_Parallel_Split" targetRef="Task_Archiv"/>
+    <bpmn2:sequenceFlow id="Flow_6a" sourceRef="Task_Buchung" targetRef="Gateway_Parallel_Join"/>
+    <bpmn2:sequenceFlow id="Flow_6b" sourceRef="Task_Archiv" targetRef="Gateway_Parallel_Join"/>
+    <bpmn2:sequenceFlow id="Flow_7" sourceRef="Gateway_Parallel_Join" targetRef="Task_Zahlung"/>
+    <bpmn2:sequenceFlow id="Flow_8" sourceRef="Task_Zahlung" targetRef="EndEvent_1"/>
+
+  </bpmn2:process>
+
+  <!-- Diagram -->
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1">
+
+      <bpmndi:BPMNShape id="Shape_Pool" bpmnElement="Participant_Pool" isHorizontal="true">
+        <dc:Bounds x="20" y="20" width="800" height="700"/>
+      </bpmndi:BPMNShape>
+
+      <!-- Lane shapes -->
+      <bpmndi:BPMNShape id="Shape_Lane_Buchhaltung" bpmnElement="Lane_Buchhaltung" isHorizontal="true">
+        <dc:Bounds x="50" y="20" width="770" height="500"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_AL" bpmnElement="Lane_Abteilungsleiter" isHorizontal="true">
+        <dc:Bounds x="50" y="520" width="770" height="100"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_GF" bpmnElement="Lane_Geschaeftsfuehrung" isHorizontal="true">
+        <dc:Bounds x="50" y="620" width="770" height="100"/>
+      </bpmndi:BPMNShape>
+
+      <!-- Flow nodes -->
+      <bpmndi:BPMNShape id="Shape_Start" bpmnElement="StartEvent_1">
+        <dc:Bounds x="100" y="52" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Erfassen" bpmnElement="Task_Erfassen">
+        <dc:Bounds x="100" y="110" width="150" height="60"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_XOR" bpmnElement="Gateway_XOR_Betrag" isMarkerVisible="true">
+        <dc:Bounds x="150" y="200" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_AutoFreigabe" bpmnElement="Task_AutoFreigabe">
+        <dc:Bounds x="100" y="280" width="150" height="60"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_ParSplit" bpmnElement="Gateway_Parallel_Split">
+        <dc:Bounds x="150" y="370" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Buchung" bpmnElement="Task_Buchung">
+        <dc:Bounds x="80" y="450" width="120" height="60"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Archiv" bpmnElement="Task_Archiv">
+        <dc:Bounds x="240" y="450" width="120" height="60"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_ParJoin" bpmnElement="Gateway_Parallel_Join">
+        <dc:Bounds x="150" y="540" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Zahlung" bpmnElement="Task_Zahlung">
+        <dc:Bounds x="100" y="620" width="150" height="60"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_End" bpmnElement="EndEvent_1">
+        <dc:Bounds x="157" y="710" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+
+      <!-- Edges -->
+      <bpmndi:BPMNEdge id="Edge_Flow1" bpmnElement="Flow_1">
+        <di:waypoint x="118" y="88"/>
+        <di:waypoint x="118" y="110"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow2" bpmnElement="Flow_2">
+        <di:waypoint x="175" y="170"/>
+        <di:waypoint x="175" y="200"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow3ja" bpmnElement="Flow_3_ja">
+        <di:waypoint x="175" y="250"/>
+        <di:waypoint x="175" y="280"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow4" bpmnElement="Flow_4">
+        <di:waypoint x="175" y="340"/>
+        <di:waypoint x="175" y="370"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow5a" bpmnElement="Flow_5a">
+        <di:waypoint x="150" y="395"/>
+        <di:waypoint x="140" y="450"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow5b" bpmnElement="Flow_5b">
+        <di:waypoint x="200" y="395"/>
+        <di:waypoint x="300" y="450"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow6a" bpmnElement="Flow_6a">
+        <di:waypoint x="140" y="510"/>
+        <di:waypoint x="150" y="540"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow6b" bpmnElement="Flow_6b">
+        <di:waypoint x="300" y="510"/>
+        <di:waypoint x="200" y="540"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow7" bpmnElement="Flow_7">
+        <di:waypoint x="175" y="590"/>
+        <di:waypoint x="175" y="620"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow8" bpmnElement="Flow_8">
+        <di:waypoint x="175" y="680"/>
+        <di:waypoint x="175" y="710"/>
+      </bpmndi:BPMNEdge>
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</bpmn2:definitions>

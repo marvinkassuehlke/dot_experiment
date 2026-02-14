@@ -1,0 +1,67 @@
+digraph Rechnungsfreigabe {
+    rankdir=TB;
+    node [fontname="Arial"];
+    compound=true;
+
+    subgraph cluster_pool {
+        label="Rechnungsfreigabe";
+        style=filled;
+        color=grey90;
+        fillcolor="#F5F5F5";
+
+        subgraph cluster_buchhaltung {
+            label="Buchhaltung";
+            style=filled;
+            color=lightblue;
+            fillcolor="#E8F4FD";
+
+            start [shape=ellipse, label="Start"];
+            erfassen [shape=box, label="Rechnung\nerfassen"];
+            xor_betrag [shape=diamond, label="XOR\nBetrag < 1000?"];
+            auto_freigabe [shape=box, label="Automatische\nFreigabe"];
+            parallel_split [shape=diamond, label="AND\n(Split)", style=filled, fillcolor="#FFD700"];
+            buchung [shape=box, label="Buchung\nerstellen"];
+            archiv [shape=box, label="Beleg\narchivieren"];
+            parallel_join [shape=diamond, label="AND\n(Join)", style=filled, fillcolor="#FFD700"];
+            zahlung [shape=box, label="Zahlung\nveranlassen"];
+            end [shape=ellipse, label="Ende"];
+        }
+
+        subgraph cluster_abteilungsleiter {
+            label="Abteilungsleiter";
+            style=filled;
+            color=lightyellow;
+            fillcolor="#FFF9E6";
+
+            // Intentionally empty — the "nein" path that should
+            // route here for manual review is MISSING (DEFECT)
+            placeholder_al [shape=plaintext, label="", width=0, height=0];
+        }
+
+        subgraph cluster_geschaeftsfuehrung {
+            label="Geschäftsführung";
+            style=filled;
+            color=lightgreen;
+            fillcolor="#E8F5E9";
+
+            // Intentionally empty — high-value approval path
+            // is also unreachable due to missing XOR branch
+            placeholder_gf [shape=plaintext, label="", width=0, height=0];
+        }
+    }
+
+    start -> erfassen;
+    erfassen -> xor_betrag;
+
+    // DEFECT: Only ONE outgoing path from XOR gateway
+    // Missing: xor_betrag -> manuelle_pruefung [label="nein"];
+    xor_betrag -> auto_freigabe [label="ja"];
+
+    auto_freigabe -> parallel_split;
+    parallel_split -> buchung;
+    parallel_split -> archiv;
+    buchung -> parallel_join;
+    archiv -> parallel_join;
+    parallel_join -> zahlung;
+    zahlung -> end;
+}
