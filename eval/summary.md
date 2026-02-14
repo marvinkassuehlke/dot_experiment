@@ -294,3 +294,57 @@ Die niedrigen Werte sind **erwartbar** — die Teilnehmer nutzen andere BPMN-Too
 - **Label-Matching**: Der automatische Vergleich matcht Labels textuell. Semantisch äquivalente Labels mit leicht anderer Formulierung werden als Mismatch gewertet. Besonders beim Teilnehmer-vs.-Referenz-Vergleich limitierend.
 - **Subgraph-Matching**: Cluster werden nur als Match gewertet, wenn Label UND enthaltene Knoten identisch sind — ein strenger Maßstab.
 - **Kein Bild-Test mit realen Daten**: Real-Data-Test deckt nur XML→DOT ab. Für Image→DOT mit realen Diagrammen wären gerenderte PNGs nötig.
+
+## 6. Abschlussfazit
+
+### Antwort auf die Ausgangsthese
+
+Die Studie startete mit der These: *"GraphViz DOT eignet sich als Zwischenformat, um grafische Business-Artefakte für LLM-basierte Analyse zugänglich zu machen."* Vier Eigenschaften wurden postuliert:
+
+| Eigenschaft | Behauptung | Ergebnis | Evidenz |
+|-------------|-----------|----------|---------|
+| LLM-nativ lesbar | Kein Vision-API nötig nach Übersetzung | **Bestätigt** | 49 korrekte Findings aus DOT-Analyse (Real-Data), 87.5% Detection Rate (synthetisch) |
+| Menschlich validierbar | Renderbar, visuell vergleichbar | **Bestätigt** | Alle 26 DOT-Dateien rendern fehlerfrei, visuelle Inspektion jederzeit möglich |
+| Kompakter als XML | 5-10x weniger Tokens | **Bestätigt** | DOT-Dateien: 20-100 Zeilen vs. BPMN XML: 200-1500 Zeilen |
+| Diagrammtyp-übergreifend einheitlich | Ein Format für alle Typen | **Bestätigt mit Einschränkung** | Flowcharts, BPMN, Swimlanes: exzellent. Orgcharts: ab ~25 Knoten problematisch bei Bildübersetzung |
+
+### Das Experiment in Zahlen
+
+| Dimension | Wert |
+|-----------|------|
+| Testfälle gesamt | 17 (12 synthetisch + 5 real) |
+| Übersetzungen (Bild+XML→DOT) | 26 |
+| Defekt-Analysen | 19 (14 synthetisch + 5 real) |
+| Geseedete Defekte erkannt | 7/8 = 87.5% |
+| Real-Data Findings (Accuracy) | 49/49 = 100% |
+| Diagrammtypen getestet | 4 (Flowchart, BPMN, Orgchart, Swimlane) |
+| BPMN-Tools abgedeckt | 3 (draw.io, Camunda, Signavio) |
+
+### Drei Kernaussagen
+
+**1. DOT als Analysegrundlage funktioniert.**
+Ein LLM kann auf Basis einer DOT-Datei Prozessdefekte erkennen, die ein Mensch bei visueller Inspektion leicht übersieht — AND-Split ohne AND-Join, Endlosschleifen ohne Exit-Bedingung, Bottleneck-Lanes, defekte XML-Referenzen. Die Analyse ist nicht oberflächlich: Sie unterscheidet strukturelle, organisatorische und Effizienz-Probleme und liefert konkrete Verbesserungsvorschläge.
+
+**2. XML-Verfügbarkeit bestimmt die Strategie.**
+Wenn XML vorliegt (BPMN, draw.io), ist XML→DOT der zuverlässigere Pfad — höhere Strukturtreue, exakte Labels, keine visuelle Interpretation nötig. Wenn nur Bilder/PDFs vorliegen, ist Bild→DOT der smarteste Weg, weil DOT eine LLM-lesbare Repräsentation erzeugt. Die Bild-Route hat einen überraschenden Bonus-Effekt: Das LLM "repariert" manchmal fehlende logische Kanten, was sowohl Stärke (findet implizite Zusammenhänge) als auch Schwäche (verschleiert Defekte) ist.
+
+**3. Der größte Hebel liegt im Dual-Translation-Ansatz.**
+Bild→DOT und XML→DOT erzeugen unterschiedliche Übersetzungen. Die Differenz zwischen beiden ist ein analytisches Signal: Wo sie divergieren, liegt ein Problem. Wo die Bildübersetzung etwas ergänzt, das im XML fehlt, hat das LLM einen impliziten Zusammenhang erkannt. Wo die XML-Übersetzung etwas enthält, das im Bild fehlt, war ein Element visuell nicht sichtbar (z.B. leere Lanes).
+
+### Empfohlene Einsatzszenarien
+
+| Szenario | Empfohlener Pfad | Begründung |
+|----------|-----------------|------------|
+| BPMN-Prozessreview | XML→DOT→Analyse | Höchste Strukturtreue, erkennt auch XML-Defekte |
+| Grafisches Artefakt ohne Quelldatei | Bild→DOT→Analyse | Einziger Weg, erzeugt LLM-lesbare Repräsentation |
+| Tiefenanalyse (Consulting) | Dual Translation + Diff | Divergenz als Signal, zwei Perspektiven auf denselben Prozess |
+| Modell-Assessment (Lehre) | DOT-Diff Teilnehmer vs. Referenz | Automatisierbare Strukturvergleiche (bei semantischem Label-Matching) |
+| Prozess-Dokumentation | DOT als Zwischenprodukt | Kompakt, versionierbar, renderbar, LLM-analysierbar |
+
+### Was diese Studie nicht beantwortet
+
+- **Skalierung**: Wie verhält sich DOT bei Diagrammen mit 100+ Knoten?
+- **Andere Diagrammtypen**: Sequenzdiagramme, ER-Diagramme, Zustandsautomaten — funktioniert DOT dort genauso?
+- **Multi-LLM-Vergleich**: Liefern GPT-4, Gemini, Llama vergleichbare Ergebnisse bei DOT-Analyse?
+- **Bild→DOT mit echten Dokumenten**: Gescannte Whiteboards, fotografierte Post-Its, unsaubere Handzeichnungen
+- **Automatisierungsgrad**: Wie weit lässt sich die Pipeline (Upload → DOT → Analyse → Report) ohne menschliche Intervention betreiben?

@@ -1,7 +1,7 @@
 # Design: DOT als Zwischenformat für Business-Diagramme
 
 **Datum:** 2026-02-14
-**Status:** Approved
+**Status:** Abgeschlossen — Ergebnisse in `eval/summary.md`
 
 ## These
 
