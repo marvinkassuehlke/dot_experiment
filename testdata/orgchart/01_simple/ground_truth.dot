@@ -1,0 +1,27 @@
+digraph KleineFirma {
+    rankdir=TB;
+    node [shape=box, fontname="Arial", style="rounded"];
+
+    gf [label="Maria Schmidt\nGeschäftsführung"];
+
+    vt [label="Thomas Müller\nVertriebsleitung"];
+    it [label="Lisa Weber\nIT-Leitung"];
+    hr [label="Frank Koch\nHR-Leitung"];
+
+    vt1 [label="Anna Braun\nVertrieb"];
+    vt2 [label="Peter Schulz\nVertrieb"];
+    it1 [label="Max Fischer\nEntwicklung"];
+    it2 [label="Julia Becker\nEntwicklung"];
+    hr1 [label="Sarah Lang\nPersonal"];
+    hr2 [label="Tim Werner\nPersonal"];
+
+    gf -> vt;
+    gf -> it;
+    gf -> hr;
+    vt -> vt1;
+    vt -> vt2;
+    it -> it1;
+    it -> it2;
+    hr -> hr1;
+    hr -> hr2;
+}

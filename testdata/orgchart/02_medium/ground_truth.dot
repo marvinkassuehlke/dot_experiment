@@ -1,0 +1,80 @@
+digraph Matrixorganisation {
+    rankdir=TB;
+    node [shape=box, fontname="Arial", style="rounded"];
+
+    // CEO
+    ceo [label="Dr. Klaus Richter\nCEO"];
+
+    // Functional Heads
+    vertrieb [label="Stefan Hoffmann\nVertriebsleitung"];
+    produkt [label="Claudia Neumann\nProduktleitung"];
+    technik [label="Andreas Schäfer\nTechnikleitung"];
+
+    // Project Leads
+    alpha [label="Petra Zimmermann\nProjektleitung Alpha"];
+    beta [label="Markus Wagner\nProjektleitung Beta"];
+
+    ceo -> vertrieb;
+    ceo -> produkt;
+    ceo -> technik;
+    ceo -> alpha;
+    ceo -> beta;
+
+    // DEFECT: Vertrieb has 12 direct reports (excessive span of control)
+    v1  [label="Sabine Keller\nKey Account Manager"];
+    v2  [label="Jörg Lehmann\nKey Account Manager"];
+    v3  [label="Nina Hartmann\nInside Sales"];
+    v4  [label="Ralf Bauer\nInside Sales"];
+    v5  [label="Monika Krüger\nInside Sales"];
+    v6  [label="Uwe Friedrich\nAußendienst"];
+    v7  [label="Karin Wolf\nAußendienst"];
+    v8  [label="Dirk Schröder\nAußendienst"];
+    v9  [label="Heike Lorenz\nPartner Management"];
+    v10 [label="Bernd Meier\nPartner Management"];
+    v11 [label="Anja Schwarz\nSales Operations"];
+    v12 [label="Oliver Vogel\nSales Operations"];
+
+    vertrieb -> v1;
+    vertrieb -> v2;
+    vertrieb -> v3;
+    vertrieb -> v4;
+    vertrieb -> v5;
+    vertrieb -> v6;
+    vertrieb -> v7;
+    vertrieb -> v8;
+    vertrieb -> v9;
+    vertrieb -> v10;
+    vertrieb -> v11;
+    vertrieb -> v12;
+
+    // Produkt: 3 product managers
+    p1 [label="Laura Berger\nProduct Manager"];
+    p2 [label="Michael Horn\nProduct Manager"];
+    p3 [label="Tanja Fuchs\nProduct Manager"];
+
+    produkt -> p1;
+    produkt -> p2;
+    produkt -> p3;
+
+    // Technik: 4 engineers
+    t1 [label="Christian Weiß\nBackend Engineer"];
+    t2 [label="Sandra Baumann\nFrontend Engineer"];
+    t3 [label="Patrick Köhler\nDevOps Engineer"];
+    t4 [label="Eva Schmitt\nData Engineer"];
+
+    technik -> t1;
+    technik -> t2;
+    technik -> t3;
+    technik -> t4;
+
+    // Matrix reporting: dashed lines from project leads to functional team members
+    alpha -> v1 [style=dashed, color=gray];
+    alpha -> p1 [style=dashed, color=gray];
+    alpha -> t1 [style=dashed, color=gray];
+    alpha -> t2 [style=dashed, color=gray];
+
+    beta -> v2 [style=dashed, color=gray];
+    beta -> p2 [style=dashed, color=gray];
+    beta -> t3 [style=dashed, color=gray];
+    beta -> t4 [style=dashed, color=gray];
+}

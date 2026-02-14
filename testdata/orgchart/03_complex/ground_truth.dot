@@ -1,0 +1,105 @@
+digraph Konzernstruktur {
+    rankdir=TB;
+    node [shape=box, fontname="Arial", style="rounded"];
+    compound=true;
+
+    // Holding
+    subgraph cluster_holding {
+        label="Holding AG";
+        style=filled;
+        color=lightgrey;
+        fontname="Arial Bold";
+
+        vorstand [label="Dr. Heinrich Brandt\nVorstandsvorsitzender"];
+        cfo [label="Margarete Winkler\nCFO"];
+        cto [label="Prof. Dr. Jens Reuter\nCTO"];
+
+        vorstand -> cfo;
+        vorstand -> cto;
+    }
+
+    // Tochter A — Manufacturing
+    subgraph cluster_tochter_a {
+        label="Tochter A — Manufacturing";
+        style=filled;
+        color=lightyellow;
+        fontname="Arial Bold";
+
+        a_gf [label="Robert Maier\nGeschäftsführer"];
+        a_prod [label="Helmut Stein\nProduktionsleitung"];
+        a_qual [label="Ingrid Falk\nQualitätsmanagement"];
+        a_log [label="Werner Haas\nLogistik"];
+
+        a_prod1 [label="Karl Berger\nFertigung"];
+        a_prod2 [label="Gisela Schuster\nFertigung"];
+        a_qual1 [label="Manfred Roth\nQM-Prüfer"];
+        a_log1 [label="Brigitte Seidel\nLager"];
+        a_log2 [label="Dieter Krause\nVersand"];
+
+        a_gf -> a_prod;
+        a_gf -> a_qual;
+        a_gf -> a_log;
+        a_prod -> a_prod1;
+        a_prod -> a_prod2;
+        a_qual -> a_qual1;
+        a_log -> a_log1;
+        a_log -> a_log2;
+    }
+
+    // Tochter B — Services
+    subgraph cluster_tochter_b {
+        label="Tochter B — Services";
+        style=filled;
+        color=lightblue;
+        fontname="Arial Bold";
+
+        b_gf [label="Susanne Engel\nGeschäftsführerin"];
+        b_consult [label="Martin Schenk\nConsulting"];
+        b_support [label="Renate Böhm\nSupport"];
+
+        b_c1 [label="Felix Groß\nSenior Consultant"];
+        b_c2 [label="Lena Pohl\nConsultant"];
+        b_c3 [label="Jan Dietrich\nConsultant"];
+        b_s1 [label="Katrin Jäger\n1st Level Support"];
+        b_s2 [label="Tobias Pfeiffer\n2nd Level Support"];
+
+        b_gf -> b_consult;
+        b_gf -> b_support;
+        b_consult -> b_c1;
+        b_consult -> b_c2;
+        b_consult -> b_c3;
+        b_support -> b_s1;
+        b_support -> b_s2;
+    }
+
+    // Tochter C — Digital (DEFECT: no reporting line to Holding)
+    subgraph cluster_tochter_c {
+        label="Tochter C — Digital";
+        style=filled;
+        color=lightcoral;
+        fontname="Arial Bold";
+
+        c_gf [label="Viktor Nowak\nGeschäftsführer"];
+        c_dev [label="Sophie Klein\nEntwicklungsleitung"];
+        c_data [label="Armin Scholz\nData Science"];
+
+        c_d1 [label="Lukas Bruns\nFullstack Developer"];
+        c_d2 [label="Marie Henkel\nFullstack Developer"];
+        c_d3 [label="Fabian Wolff\nMobile Developer"];
+        c_da1 [label="Elena Kraft\nData Analyst"];
+        c_da2 [label="Niklas Franke\nML Engineer"];
+
+        c_gf -> c_dev;
+        c_gf -> c_data;
+        c_dev -> c_d1;
+        c_dev -> c_d2;
+        c_dev -> c_d3;
+        c_data -> c_da1;
+        c_data -> c_da2;
+    }
+
+    // Reporting lines from subsidiaries to Holding
+    a_gf -> vorstand [label="berichtet an", style=bold];
+    b_gf -> vorstand [label="berichtet an", style=bold];
+    // DEFECT: c_gf has NO edge to vorstand — Tochter C is orphaned
+}
