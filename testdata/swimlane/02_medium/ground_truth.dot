@@ -1,0 +1,74 @@
+digraph Softwarerelease {
+    rankdir=LR;
+    node [fontname="Arial"];
+    compound=true;
+
+    subgraph cluster_dev {
+        label="Dev";
+        style=filled;
+        color=lightblue;
+        fillcolor="#E8F4FD";
+
+        feature [shape=box, label="Feature\nentwickeln"];
+        code_review [shape=box, label="Code\nReview"];
+        dev_fix1 [shape=box, label="Bug fixen\n(1. Runde)"];
+        dev_fix2 [shape=box, label="Bug fixen\n(2. Runde)"];
+        dev_fix3 [shape=box, label="Bug fixen\n(3. Runde)"];
+    }
+
+    subgraph cluster_qa {
+        label="QA";
+        style=filled;
+        color=lightyellow;
+        fillcolor="#FFF9E6";
+
+        testplan [shape=box, label="Testplan\nerstellen"];
+        tests [shape=box, label="Tests\ndurchführen"];
+        qa_retest1 [shape=box, label="Retest\n(1. Runde)"];
+        qa_retest2 [shape=box, label="Retest\n(2. Runde)"];
+        qa_retest3 [shape=box, label="Retest\n(3. Runde)"];
+        tests_bestanden [shape=box, label="Tests\nbestanden"];
+    }
+
+    subgraph cluster_ops {
+        label="Ops";
+        style=filled;
+        color=lightgreen;
+        fillcolor="#E8F5E9";
+
+        deployment_vorbereiten [shape=box, label="Deployment\nvorbereiten"];
+        production_deploy [shape=box, label="Production\nDeploy"];
+    }
+
+    subgraph cluster_management {
+        label="Management";
+        style=filled;
+        color=lightsalmon;
+        fillcolor="#FFE8E0";
+
+        start [shape=ellipse, label="Start"];
+        release_freigeben [shape=box, label="Release\nfreigeben"];
+        ende [shape=ellipse, label="Ende"];
+    }
+
+    // Main flow
+    start -> feature;
+    feature -> code_review;
+    code_review -> testplan;
+    testplan -> tests;
+
+    // Ping-Pong defect: 3x Bug fix cycle
+    tests -> dev_fix1 [label="Bug gefunden"];
+    dev_fix1 -> qa_retest1;
+    qa_retest1 -> dev_fix2 [label="Bug gefunden"];
+    dev_fix2 -> qa_retest2;
+    qa_retest2 -> dev_fix3 [label="Bug gefunden"];
+    dev_fix3 -> qa_retest3;
+    qa_retest3 -> tests_bestanden [label="OK"];
+
+    // After QA passes
+    tests_bestanden -> deployment_vorbereiten;
+    deployment_vorbereiten -> release_freigeben;
+    release_freigeben -> production_deploy;
+    production_deploy -> ende;
+}

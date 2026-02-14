@@ -1,0 +1,121 @@
+<mxGraphModel dx="1422" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+
+    <!-- Swimlane: Kunde -->
+    <mxCell id="lane_kunde" value="Kunde" style="shape=swimlane;startSize=30;horizontal=1;fillColor=#E8F4FD;strokeColor=#6c8ebf;fontStyle=1;fontSize=14;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="40" y="40" width="1200" height="180" as="geometry"/>
+    </mxCell>
+    <mxCell id="start" value="Start" style="ellipse;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_kunde">
+      <mxGeometry x="30" y="60" width="80" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="reklamation_einreichen" value="Reklamation&#xa;einreichen" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_kunde">
+      <mxGeometry x="160" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="erstattung_erhalten" value="Erstattung&#xa;erhalten" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_kunde">
+      <mxGeometry x="660" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="reparatur_erhalten" value="Reparatur&#xa;erhalten" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_kunde">
+      <mxGeometry x="860" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="kva_erhalten" value="Kostenvoranschlag&#xa;erhalten" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_kunde">
+      <mxGeometry x="860" y="125" width="140" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="ende" value="Ende" style="ellipse;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_kunde">
+      <mxGeometry x="1080" y="60" width="80" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- Swimlane: Service -->
+    <mxCell id="lane_service" value="Service" style="shape=swimlane;startSize=30;horizontal=1;fillColor=#FFF9E6;strokeColor=#d6b656;fontStyle=1;fontSize=14;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="40" y="240" width="1200" height="180" as="geometry"/>
+    </mxCell>
+    <mxCell id="reklamation_aufnehmen" value="Reklamation&#xa;aufnehmen" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_service">
+      <mxGeometry x="160" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="kategorie" value="Kategorie?" style="rhombus;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_service">
+      <mxGeometry x="350" y="40" width="120" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="erstattung_veranlassen" value="Erstattung&#xa;veranlassen" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_service">
+      <mxGeometry x="540" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="technische_pruefung" value="Technische Prüfung&#xa;anfordern" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_service">
+      <mxGeometry x="540" y="125" width="150" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- Swimlane: Technik -->
+    <mxCell id="lane_technik" value="Technik" style="shape=swimlane;startSize=30;horizontal=1;fillColor=#E8F5E9;strokeColor=#82b366;fontStyle=1;fontSize=14;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="40" y="440" width="1200" height="180" as="geometry"/>
+    </mxCell>
+    <mxCell id="fehler_analysieren" value="Fehler&#xa;analysieren" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_technik">
+      <mxGeometry x="350" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="gutachten" value="Gutachten&#xa;erstellen" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_technik">
+      <mxGeometry x="540" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="gewaehrleistung" value="Gewähr-&#xa;leistung?" style="rhombus;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_technik">
+      <mxGeometry x="720" y="40" width="120" height="90" as="geometry"/>
+    </mxCell>
+    <mxCell id="reparatur" value="Reparatur&#xa;durchführen" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_technik">
+      <mxGeometry x="900" y="40" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="kostenvoranschlag" value="Kostenvoranschlag&#xa;erstellen" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_technik">
+      <mxGeometry x="900" y="115" width="150" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- Swimlane: Recht (DEFECT: empty lane) -->
+    <mxCell id="lane_recht" value="Recht" style="shape=swimlane;startSize=30;horizontal=1;fillColor=#FFE8E0;strokeColor=#b85450;fontStyle=1;fontSize=14;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="40" y="640" width="1200" height="120" as="geometry"/>
+    </mxCell>
+
+    <!-- Edges -->
+    <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="start" target="reklamation_einreichen" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="reklamation_einreichen" target="reklamation_aufnehmen" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="reklamation_aufnehmen" target="kategorie" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e4" value="einfach" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="kategorie" target="erstattung_veranlassen" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e5" value="technisch" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="kategorie" target="technische_pruefung" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="erstattung_veranlassen" target="erstattung_erhalten" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="erstattung_erhalten" target="ende" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="technische_pruefung" target="fehler_analysieren" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="fehler_analysieren" target="gutachten" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="gutachten" target="gewaehrleistung" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e11" value="ja" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="gewaehrleistung" target="reparatur" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e12" value="nein" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="gewaehrleistung" target="kostenvoranschlag" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="reparatur" target="reparatur_erhalten" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e14" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="reparatur_erhalten" target="ende" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e15" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="kostenvoranschlag" target="kva_erhalten" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e16" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="kva_erhalten" target="ende" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+  </root>
+</mxGraphModel>

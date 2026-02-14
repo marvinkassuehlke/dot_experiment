@@ -1,0 +1,56 @@
+digraph Bestellprozess {
+    rankdir=LR;
+    node [fontname="Arial"];
+    compound=true;
+
+    subgraph cluster_kunde {
+        label="Kunde";
+        style=filled;
+        color=lightblue;
+        fillcolor="#E8F4FD";
+
+        start [shape=ellipse, label="Start"];
+        bestellung_aufgeben [shape=box, label="Bestellung\naufgeben"];
+        bestellung_bestaetigen [shape=box, label="Bestellung\nbestätigen"];
+        ware_empfangen [shape=box, label="Ware\nempfangen"];
+        ende [shape=ellipse, label="Ende"];
+    }
+
+    subgraph cluster_vertrieb {
+        label="Vertrieb";
+        style=filled;
+        color=lightyellow;
+        fillcolor="#FFF9E6";
+
+        bestellung_pruefen [shape=box, label="Bestellung\nprüfen"];
+        auftragsbestaetigung [shape=box, label="Auftragsbestätigung\nsenden"];
+        rechnung_erstellen [shape=box, label="Rechnung\nerstellen"];
+        ende_rechnung [shape=ellipse, label="Ende\n(Rechnung)"];
+    }
+
+    subgraph cluster_lager {
+        label="Lager";
+        style=filled;
+        color=lightgreen;
+        fillcolor="#E8F5E9";
+
+        verfuegbarkeit [shape=box, label="Verfügbarkeit\nprüfen"];
+        kommissionieren [shape=box, label="Ware\nkommissionieren"];
+        versand [shape=box, label="Versand\nbeauftragen"];
+    }
+
+    // Main flow crossing lanes
+    start -> bestellung_aufgeben;
+    bestellung_aufgeben -> bestellung_pruefen;
+    bestellung_pruefen -> verfuegbarkeit;
+    verfuegbarkeit -> kommissionieren;
+    kommissionieren -> versand;
+    versand -> ware_empfangen;
+    ware_empfangen -> ende;
+
+    // Parallel flows
+    bestellung_pruefen -> auftragsbestaetigung;
+    auftragsbestaetigung -> bestellung_bestaetigen;
+    auftragsbestaetigung -> rechnung_erstellen;
+    rechnung_erstellen -> ende_rechnung;
+}

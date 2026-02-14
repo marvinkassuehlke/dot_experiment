@@ -1,0 +1,80 @@
+digraph Reklamation {
+    rankdir=LR;
+    node [fontname="Arial"];
+    compound=true;
+
+    subgraph cluster_kunde {
+        label="Kunde";
+        style=filled;
+        color=lightblue;
+        fillcolor="#E8F4FD";
+
+        start [shape=ellipse, label="Start"];
+        reklamation_einreichen [shape=box, label="Reklamation\neinreichen"];
+        erstattung_erhalten [shape=box, label="Erstattung\nerhalten"];
+        reparatur_erhalten [shape=box, label="Reparatur\nerhalten"];
+        kva_erhalten [shape=box, label="Kostenvoranschlag\nerhalten"];
+        ende [shape=ellipse, label="Ende"];
+    }
+
+    subgraph cluster_service {
+        label="Service";
+        style=filled;
+        color=lightyellow;
+        fillcolor="#FFF9E6";
+
+        reklamation_aufnehmen [shape=box, label="Reklamation\naufnehmen"];
+        kategorie [shape=diamond, label="Kategorie?"];
+        erstattung_veranlassen [shape=box, label="Erstattung\nveranlassen"];
+        technische_pruefung [shape=box, label="Technische Prüfung\nanfordern"];
+    }
+
+    subgraph cluster_technik {
+        label="Technik";
+        style=filled;
+        color=lightgreen;
+        fillcolor="#E8F5E9";
+
+        fehler_analysieren [shape=box, label="Fehler\nanalysieren"];
+        gutachten [shape=box, label="Gutachten\nerstellen"];
+        gewaehrleistung [shape=diamond, label="Gewähr-\nleistung?"];
+        reparatur [shape=box, label="Reparatur\ndurchführen"];
+        kostenvoranschlag [shape=box, label="Kostenvoranschlag\nerstellen"];
+    }
+
+    // DEFECT: Empty lane — Recht has no activity nodes
+    subgraph cluster_recht {
+        label="Recht";
+        style=filled;
+        color=lightsalmon;
+        fillcolor="#FFE8E0";
+    }
+
+    // Main flow
+    start -> reklamation_einreichen;
+    reklamation_einreichen -> reklamation_aufnehmen;
+    reklamation_aufnehmen -> kategorie;
+
+    // Decision: Erstattung or Technische Prüfung
+    kategorie -> erstattung_veranlassen [label="einfach"];
+    kategorie -> technische_pruefung [label="technisch"];
+
+    // Erstattung path
+    erstattung_veranlassen -> erstattung_erhalten;
+    erstattung_erhalten -> ende;
+
+    // Technische Prüfung path
+    technische_pruefung -> fehler_analysieren;
+    fehler_analysieren -> gutachten;
+    gutachten -> gewaehrleistung;
+
+    // Gewährleistung decision
+    gewaehrleistung -> reparatur [label="ja"];
+    gewaehrleistung -> kostenvoranschlag [label="nein"];
+
+    // End paths
+    reparatur -> reparatur_erhalten;
+    reparatur_erhalten -> ende;
+    kostenvoranschlag -> kva_erhalten;
+    kva_erhalten -> ende;
+}

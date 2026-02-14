@@ -1,0 +1,92 @@
+<mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+
+    <!-- Swimlane: Kunde -->
+    <mxCell id="lane_kunde" value="Kunde" style="shape=swimlane;startSize=30;horizontal=1;fillColor=#E8F4FD;strokeColor=#6c8ebf;fontStyle=1;fontSize=14;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="40" y="40" width="1100" height="180" as="geometry"/>
+    </mxCell>
+    <mxCell id="start" value="Start" style="ellipse;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_kunde">
+      <mxGeometry x="30" y="60" width="80" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="bestellung_aufgeben" value="Bestellung&#xa;aufgeben" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_kunde">
+      <mxGeometry x="160" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="bestellung_bestaetigen" value="Bestellung&#xa;bestätigen" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_kunde">
+      <mxGeometry x="600" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="ware_empfangen" value="Ware&#xa;empfangen" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_kunde">
+      <mxGeometry x="860" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="ende" value="Ende" style="ellipse;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_kunde">
+      <mxGeometry x="1000" y="60" width="80" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- Swimlane: Vertrieb -->
+    <mxCell id="lane_vertrieb" value="Vertrieb" style="shape=swimlane;startSize=30;horizontal=1;fillColor=#FFF9E6;strokeColor=#d6b656;fontStyle=1;fontSize=14;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="40" y="240" width="1100" height="180" as="geometry"/>
+    </mxCell>
+    <mxCell id="bestellung_pruefen" value="Bestellung&#xa;prüfen" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_vertrieb">
+      <mxGeometry x="160" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="auftragsbestaetigung" value="Auftragsbestätigung&#xa;senden" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_vertrieb">
+      <mxGeometry x="400" y="55" width="150" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="rechnung_erstellen" value="Rechnung&#xa;erstellen" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_vertrieb">
+      <mxGeometry x="700" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="ende_rechnung" value="Ende&#xa;(Rechnung)" style="ellipse;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_vertrieb">
+      <mxGeometry x="880" y="55" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Swimlane: Lager -->
+    <mxCell id="lane_lager" value="Lager" style="shape=swimlane;startSize=30;horizontal=1;fillColor=#E8F5E9;strokeColor=#82b366;fontStyle=1;fontSize=14;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="40" y="440" width="1100" height="180" as="geometry"/>
+    </mxCell>
+    <mxCell id="verfuegbarkeit" value="Verfügbarkeit&#xa;prüfen" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_lager">
+      <mxGeometry x="160" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="kommissionieren" value="Ware&#xa;kommissionieren" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_lager">
+      <mxGeometry x="400" y="55" width="140" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="versand" value="Versand&#xa;beauftragen" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_lager">
+      <mxGeometry x="660" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Edges -->
+    <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="start" target="bestellung_aufgeben" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="bestellung_aufgeben" target="bestellung_pruefen" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="bestellung_pruefen" target="verfuegbarkeit" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="verfuegbarkeit" target="kommissionieren" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="kommissionieren" target="versand" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="versand" target="ware_empfangen" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="ware_empfangen" target="ende" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="bestellung_pruefen" target="auftragsbestaetigung" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="auftragsbestaetigung" target="bestellung_bestaetigen" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="auftragsbestaetigung" target="rechnung_erstellen" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="rechnung_erstellen" target="ende_rechnung" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+  </root>
+</mxGraphModel>

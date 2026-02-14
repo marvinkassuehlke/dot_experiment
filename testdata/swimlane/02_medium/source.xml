@@ -1,0 +1,121 @@
+<mxGraphModel dx="1422" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200">
+  <root>
+    <mxCell id="0"/>
+    <mxCell id="1" parent="0"/>
+
+    <!-- Swimlane: Dev -->
+    <mxCell id="lane_dev" value="Dev" style="shape=swimlane;startSize=30;horizontal=1;fillColor=#E8F4FD;strokeColor=#6c8ebf;fontStyle=1;fontSize=14;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="40" y="40" width="1400" height="180" as="geometry"/>
+    </mxCell>
+    <mxCell id="feature" value="Feature&#xa;entwickeln" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_dev">
+      <mxGeometry x="80" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="code_review" value="Code&#xa;Review" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_dev">
+      <mxGeometry x="260" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="dev_fix1" value="Bug fixen&#xa;(1. Runde)" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_dev">
+      <mxGeometry x="580" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="dev_fix2" value="Bug fixen&#xa;(2. Runde)" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_dev">
+      <mxGeometry x="820" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="dev_fix3" value="Bug fixen&#xa;(3. Runde)" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_dev">
+      <mxGeometry x="1060" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Swimlane: QA -->
+    <mxCell id="lane_qa" value="QA" style="shape=swimlane;startSize=30;horizontal=1;fillColor=#FFF9E6;strokeColor=#d6b656;fontStyle=1;fontSize=14;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="40" y="240" width="1400" height="180" as="geometry"/>
+    </mxCell>
+    <mxCell id="testplan" value="Testplan&#xa;erstellen" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_qa">
+      <mxGeometry x="260" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="tests" value="Tests&#xa;durchführen" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_qa">
+      <mxGeometry x="430" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="qa_retest1" value="Retest&#xa;(1. Runde)" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_qa">
+      <mxGeometry x="700" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="qa_retest2" value="Retest&#xa;(2. Runde)" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_qa">
+      <mxGeometry x="940" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="qa_retest3" value="Retest&#xa;(3. Runde)" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_qa">
+      <mxGeometry x="1180" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="tests_bestanden" value="Tests&#xa;bestanden" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_qa">
+      <mxGeometry x="1310" y="55" width="100" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Swimlane: Ops -->
+    <mxCell id="lane_ops" value="Ops" style="shape=swimlane;startSize=30;horizontal=1;fillColor=#E8F5E9;strokeColor=#82b366;fontStyle=1;fontSize=14;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="40" y="440" width="1400" height="180" as="geometry"/>
+    </mxCell>
+    <mxCell id="deployment_vorbereiten" value="Deployment&#xa;vorbereiten" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_ops">
+      <mxGeometry x="1100" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="production_deploy" value="Production&#xa;Deploy" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_ops">
+      <mxGeometry x="1280" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+
+    <!-- Swimlane: Management -->
+    <mxCell id="lane_management" value="Management" style="shape=swimlane;startSize=30;horizontal=1;fillColor=#FFE8E0;strokeColor=#b85450;fontStyle=1;fontSize=14;fontFamily=Arial;" vertex="1" parent="1">
+      <mxGeometry x="40" y="640" width="1400" height="180" as="geometry"/>
+    </mxCell>
+    <mxCell id="start" value="Start" style="ellipse;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_management">
+      <mxGeometry x="30" y="60" width="80" height="50" as="geometry"/>
+    </mxCell>
+    <mxCell id="release_freigeben" value="Release&#xa;freigeben" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_management">
+      <mxGeometry x="1190" y="55" width="120" height="60" as="geometry"/>
+    </mxCell>
+    <mxCell id="ende" value="Ende" style="ellipse;whiteSpace=wrap;html=1;fontSize=12;fontFamily=Arial;" vertex="1" parent="lane_management">
+      <mxGeometry x="1330" y="60" width="80" height="50" as="geometry"/>
+    </mxCell>
+
+    <!-- Edges -->
+    <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="start" target="feature" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="feature" target="code_review" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="code_review" target="testplan" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="testplan" target="tests" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e5" value="Bug gefunden" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="tests" target="dev_fix1" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="dev_fix1" target="qa_retest1" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e7" value="Bug gefunden" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="qa_retest1" target="dev_fix2" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="dev_fix2" target="qa_retest2" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e9" value="Bug gefunden" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="qa_retest2" target="dev_fix3" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="dev_fix3" target="qa_retest3" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e11" value="OK" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="qa_retest3" target="tests_bestanden" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="tests_bestanden" target="deployment_vorbereiten" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="deployment_vorbereiten" target="release_freigeben" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e14" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="release_freigeben" target="production_deploy" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+    <mxCell id="e15" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="production_deploy" target="ende" parent="1">
+      <mxGeometry relative="1" as="geometry"/>
+    </mxCell>
+  </root>
+</mxGraphModel>
