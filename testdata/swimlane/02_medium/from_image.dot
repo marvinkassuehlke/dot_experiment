@@ -1,0 +1,71 @@
+digraph swimlane_medium {
+    rankdir=LR;
+    compound=true;
+    fontname="Arial";
+    node [fontname="Arial", fontsize=12];
+    edge [fontname="Arial", fontsize=10];
+
+    subgraph cluster_dev {
+        label="Dev";
+        style=filled;
+        fillcolor="#E8F4FD";
+        color="#6c8ebf";
+
+        feature [label="Feature\nentwickeln", shape=box];
+        code_review [label="Code\nReview", shape=box];
+        dev_fix1 [label="Bug fixen\n(1. Runde)", shape=box];
+        dev_fix2 [label="Bug fixen\n(2. Runde)", shape=box];
+        dev_fix3 [label="Bug fixen\n(3. Runde)", shape=box];
+    }
+
+    subgraph cluster_qa {
+        label="QA";
+        style=filled;
+        fillcolor="#FFF9E6";
+        color="#d6b656";
+
+        testplan [label="Testplan\nerstellen", shape=box];
+        tests [label="Tests\ndurchführen", shape=box];
+        qa_retest1 [label="Retest\n(1. Runde)", shape=box];
+        qa_retest2 [label="Retest\n(2. Runde)", shape=box];
+        qa_retest3 [label="Retest\n(3. Runde)", shape=box];
+        tests_bestanden [label="Tests\nbestanden", shape=box];
+    }
+
+    subgraph cluster_ops {
+        label="Ops";
+        style=filled;
+        fillcolor="#E8F5E9";
+        color="#82b366";
+
+        deployment_vorbereiten [label="Deployment\nvorbereiten", shape=box];
+        production_deploy [label="Production\nDeploy", shape=box];
+    }
+
+    subgraph cluster_management {
+        label="Management";
+        style=filled;
+        fillcolor="#FFE8E0";
+        color="#b85450";
+
+        start [label="Start", shape=ellipse];
+        release_freigeben [label="Release\nfreigeben", shape=box];
+        ende [label="Ende", shape=ellipse];
+    }
+
+    start -> feature;
+    feature -> code_review;
+    code_review -> testplan;
+    testplan -> tests;
+    tests -> dev_fix1 [label="Bug gefunden"];
+    dev_fix1 -> qa_retest1;
+    qa_retest1 -> dev_fix2 [label="Bug gefunden"];
+    dev_fix2 -> qa_retest2;
+    qa_retest2 -> dev_fix3 [label="Bug gefunden"];
+    dev_fix3 -> qa_retest3;
+    qa_retest3 -> tests_bestanden [label="OK"];
+    tests_bestanden -> deployment_vorbereiten;
+    deployment_vorbereiten -> release_freigeben;
+    release_freigeben -> production_deploy;
+    production_deploy -> ende;
+}

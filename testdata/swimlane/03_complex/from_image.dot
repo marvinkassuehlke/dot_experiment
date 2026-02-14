@@ -1,0 +1,63 @@
+digraph swimlane_complex {
+    rankdir=LR;
+    compound=true;
+    fontname="Arial";
+    node [fontname="Arial", fontsize=12];
+    edge [fontname="Arial", fontsize=10];
+
+    subgraph cluster_kunde {
+        label="Kunde";
+        style=filled;
+        fillcolor="#E8F4FD";
+        color="#6c8ebf";
+
+        start [label="Start", shape=ellipse];
+        reklamation_einreichen [label="Reklamation\neinreichen", shape=box];
+        kostenvoranschlag_erhalten [label="Kostenvoranschlag\nerhalten", shape=box];
+        reparatur_erhalten [label="Reparatur\nerhalten", shape=box];
+        erstattung_erhalten [label="Erstattung\nerhalten", shape=box];
+        ende [label="Ende", shape=ellipse];
+    }
+
+    subgraph cluster_service {
+        label="Service";
+        style=filled;
+        fillcolor="#FFF9E6";
+        color="#d6b656";
+
+        reklamation_aufnehmen [label="Reklamation\naufnehmen", shape=box];
+        kategorie [label="Kategorie?", shape=diamond];
+        erstattung_veranlassen [label="Erstattung\nveranlassen", shape=box];
+        technische_pruefung [label="Technische Prüfung\nanfordern", shape=box];
+    }
+
+    subgraph cluster_technik {
+        label="Technik";
+        style=filled;
+        fillcolor="#E8F5E9";
+        color="#82b366";
+
+        fehler_analysieren [label="Fehler\nanalysieren", shape=box];
+        gutachten [label="Gutachten\nerstellen", shape=box];
+        gewaehrleistung [label="Gewähr-\nleistung?", shape=diamond];
+        kostenvoranschlag_erstellen [label="Kostenvoranschlag\nerstellen", shape=box];
+        reparatur [label="Reparatur\ndurchführen", shape=box];
+    }
+
+    start -> reklamation_einreichen;
+    reklamation_einreichen -> reklamation_aufnehmen;
+    reklamation_aufnehmen -> kategorie;
+    kategorie -> erstattung_veranlassen [label="einfach"];
+    kategorie -> technische_pruefung [label="technisch"];
+    erstattung_veranlassen -> erstattung_erhalten;
+    erstattung_erhalten -> ende;
+    technische_pruefung -> fehler_analysieren;
+    fehler_analysieren -> gutachten;
+    gutachten -> gewaehrleistung;
+    gewaehrleistung -> reparatur [label="ja"];
+    gewaehrleistung -> kostenvoranschlag_erstellen [label="nein"];
+    reparatur -> reparatur_erhalten;
+    reparatur_erhalten -> ende;
+    kostenvoranschlag_erstellen -> kostenvoranschlag_erhalten;
+    kostenvoranschlag_erhalten -> ende;
+}

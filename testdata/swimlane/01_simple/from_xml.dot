@@ -1,0 +1,55 @@
+digraph swimlane_simple {
+    rankdir=LR;
+    compound=true;
+    fontname="Arial";
+    node [fontname="Arial", fontsize=12];
+    edge [fontname="Arial", fontsize=10];
+
+    subgraph cluster_kunde {
+        label="Kunde";
+        style=filled;
+        fillcolor="#E8F4FD";
+        color="#6c8ebf";
+
+        start [label="Start", shape=ellipse];
+        bestellung_aufgeben [label="Bestellung\naufgeben", shape=box];
+        bestellung_bestaetigen [label="Bestellung\nbestätigen", shape=box];
+        ware_empfangen [label="Ware\nempfangen", shape=box];
+        ende [label="Ende", shape=ellipse];
+    }
+
+    subgraph cluster_vertrieb {
+        label="Vertrieb";
+        style=filled;
+        fillcolor="#FFF9E6";
+        color="#d6b656";
+
+        bestellung_pruefen [label="Bestellung\nprüfen", shape=box];
+        auftragsbestaetigung [label="Auftragsbestätigung\nsenden", shape=box];
+        rechnung_erstellen [label="Rechnung\nerstellen", shape=box];
+        ende_rechnung [label="Ende\n(Rechnung)", shape=ellipse];
+    }
+
+    subgraph cluster_lager {
+        label="Lager";
+        style=filled;
+        fillcolor="#E8F5E9";
+        color="#82b366";
+
+        verfuegbarkeit [label="Verfügbarkeit\nprüfen", shape=box];
+        kommissionieren [label="Ware\nkommissionieren", shape=box];
+        versand [label="Versand\nbeauftragen", shape=box];
+    }
+
+    start -> bestellung_aufgeben;
+    bestellung_aufgeben -> bestellung_pruefen;
+    bestellung_pruefen -> verfuegbarkeit;
+    verfuegbarkeit -> kommissionieren;
+    kommissionieren -> versand;
+    versand -> ware_empfangen;
+    ware_empfangen -> ende;
+    bestellung_pruefen -> auftragsbestaetigung;
+    auftragsbestaetigung -> bestellung_bestaetigen;
+    auftragsbestaetigung -> rechnung_erstellen;
+    rechnung_erstellen -> ende_rechnung;
+}
