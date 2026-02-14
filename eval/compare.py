@@ -50,6 +50,63 @@ def extract_subgraphs(graph: pydot.Dot) -> dict[str, set[str]]:
     return clusters
 
 
+def _node_label(graph: pydot.Dot, name: str) -> str:
+    """Return the label for a node, falling back to its ID."""
+    for node in graph.get_nodes():
+        if node.get_name().strip('"') == name:
+            label = node.get('label')
+            if label:
+                return label.strip('"')
+    for sg in graph.get_subgraphs():
+        result = _node_label(sg, name)
+        if result != name:
+            return result
+    return name
+
+
+def _normalize_label(label: str) -> str:
+    """Normalize label: collapse newlines and extra whitespace."""
+    return ' '.join(label.replace('\\n', ' ').split())
+
+
+def _build_label_map(graph: pydot.Dot) -> dict[str, str]:
+    """Map node ID -> normalized label for all nodes in the graph."""
+    nodes = extract_nodes(graph)
+    return {n: _normalize_label(_node_label(graph, n)) for n in nodes}
+
+
+def extract_node_labels(graph: pydot.Dot) -> set[str]:
+    return set(_build_label_map(graph).values())
+
+
+def extract_edge_labels(graph: pydot.Dot) -> set[tuple[str, str]]:
+    label_map = _build_label_map(graph)
+    edges = set()
+    for edge in graph.get_edges():
+        src = label_map.get(edge.get_source().strip('"'), edge.get_source().strip('"'))
+        dst = label_map.get(edge.get_destination().strip('"'), edge.get_destination().strip('"'))
+        edges.add((src, dst))
+    for sg in graph.get_subgraphs():
+        sub_map = _build_label_map(sg)
+        label_map.update(sub_map)
+        for edge in sg.get_edges():
+            src = label_map.get(edge.get_source().strip('"'), edge.get_source().strip('"'))
+            dst = label_map.get(edge.get_destination().strip('"'), edge.get_destination().strip('"'))
+            edges.add((src, dst))
+    return edges
+
+
+def extract_subgraph_labels(graph: pydot.Dot) -> dict[str, set[str]]:
+    clusters = {}
+    for sg in graph.get_subgraphs():
+        name = sg.get_name().strip('"')
+        if name.startswith('cluster'):
+            sg_label = sg.get('label')
+            key = sg_label.strip('"') if sg_label else name
+            clusters[key] = extract_node_labels(sg)
+    return clusters
+
+
 def precision_recall(truth: set, candidate: set) -> tuple[float, float]:
     if not truth and not candidate:
         return 1.0, 1.0
@@ -62,6 +119,7 @@ def compare_graphs(truth_dot: str, candidate_dot: str) -> dict:
     truth = parse_dot(truth_dot)
     candidate = parse_dot(candidate_dot)
 
+    # ID-based comparison
     truth_nodes = extract_nodes(truth)
     cand_nodes = extract_nodes(candidate)
     node_prec, node_rec = precision_recall(truth_nodes, cand_nodes)
@@ -79,12 +137,35 @@ def compare_graphs(truth_dot: str, candidate_dot: str) -> dict:
     else:
         sg_match = 1.0
 
+    # Label-based comparison (robust against ID mismatches)
+    truth_labels = extract_node_labels(truth)
+    cand_labels = extract_node_labels(candidate)
+    label_node_prec, label_node_rec = precision_recall(truth_labels, cand_labels)
+
+    truth_edge_labels = extract_edge_labels(truth)
+    cand_edge_labels = extract_edge_labels(candidate)
+    label_edge_prec, label_edge_rec = precision_recall(truth_edge_labels, cand_edge_labels)
+
+    truth_sg_labels = extract_subgraph_labels(truth)
+    cand_sg_labels = extract_subgraph_labels(candidate)
+    if truth_sg_labels:
+        matched_labels = sum(1 for k, v in truth_sg_labels.items()
+                             if k in cand_sg_labels and v == cand_sg_labels[k])
+        sg_label_match = matched_labels / len(truth_sg_labels)
+    else:
+        sg_label_match = 1.0
+
     return {
         "node_precision": round(node_prec, 3),
         "node_recall": round(node_rec, 3),
         "edge_precision": round(edge_prec, 3),
         "edge_recall": round(edge_rec, 3),
         "subgraph_match": round(sg_match, 3),
+        "label_node_precision": round(label_node_prec, 3),
+        "label_node_recall": round(label_node_rec, 3),
+        "label_edge_precision": round(label_edge_prec, 3),
+        "label_edge_recall": round(label_edge_rec, 3),
+        "label_subgraph_match": round(sg_label_match, 3),
         "truth_nodes": len(truth_nodes),
         "candidate_nodes": len(cand_nodes),
         "truth_edges": len(truth_edges),
