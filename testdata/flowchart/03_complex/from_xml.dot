@@ -1,0 +1,37 @@
+digraph flowchart {
+    rankdir=TB;
+    node [fontname="Arial", fontsize=12];
+    edge [fontname="Arial", fontsize=10];
+
+    start [label="Antrag\neingegangen", shape=ellipse];
+    docs [label="Unterlagen\nprüfen", shape=box];
+    complete [label="Unterlagen\nvollständig?", shape=diamond];
+    request_docs [label="Unterlagen\nnachfordern", shape=box];
+    schufa [label="Schufa-\nAuskunft", shape=box];
+    income [label="Einkommens-\nprüfung", shape=box];
+    collateral [label="Sicherheiten-\nbewertung", shape=box];
+    merge [label="Alle Prüfungen\nbestanden?", shape=diamond];
+    approve [label="Kredit\ngenehmigen", shape=box];
+    reject [label="Kredit\nablehnen", shape=box];
+    review [label="Nochmalige\nPrüfung", shape=box];
+    review_check [label="Ergebnis\nanders?", shape=diamond];
+    done_yes [label="Genehmigt", shape=ellipse];
+    done_no [label="Abgelehnt", shape=ellipse];
+
+    start -> docs;
+    docs -> complete;
+    complete -> request_docs [label="nein"];
+    request_docs -> docs;
+    complete -> schufa [label="ja"];
+    complete -> income [label="ja"];
+    complete -> collateral [label="ja"];
+    schufa -> merge;
+    income -> merge;
+    collateral -> merge;
+    merge -> approve [label="ja"];
+    merge -> reject [label="nein"];
+    reject -> review;
+    review -> review_check;
+    review_check -> review [label="nein"];
+    approve -> done_yes;
+}

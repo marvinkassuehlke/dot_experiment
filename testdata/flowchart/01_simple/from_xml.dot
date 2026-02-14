@@ -1,0 +1,21 @@
+digraph flowchart {
+    rankdir=TB;
+    node [fontname="Arial", fontsize=12];
+    edge [fontname="Arial", fontsize=10];
+
+    start [label="Bestellung\neingang", shape=ellipse];
+    check [label="Lager\nausreichend?", shape=diamond];
+    reorder [label="Nachbestellung\nauslösen", shape=box];
+    wait [label="Ware\nentgegennehmen", shape=box];
+    pick [label="Ware\nkommissionieren", shape=box];
+    pack [label="Verpacken &\nVersand", shape=box];
+    done [label="Bestellung\nabgeschlossen", shape=ellipse];
+
+    start -> check;
+    check -> pick [label="ja"];
+    check -> reorder [label="nein"];
+    reorder -> wait;
+    wait -> pick;
+    pick -> pack;
+    pack -> done;
+}

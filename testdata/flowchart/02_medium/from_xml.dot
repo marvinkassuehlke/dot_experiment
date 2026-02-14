@@ -1,0 +1,28 @@
+digraph flowchart {
+    rankdir=TB;
+    node [fontname="Arial", fontsize=12];
+    edge [fontname="Arial", fontsize=10];
+
+    start [label="Ticket\neingegangen", shape=ellipse];
+    classify [label="Ticket\nklassifizieren", shape=box];
+    severity [label="Schweregrad?", shape=diamond];
+    l1 [label="L1 Support\nbearbeitet", shape=box];
+    l2 [label="L2 Support\nbearbeitet", shape=box];
+    escalate [label="Eskalation an\nEntwicklung", shape=box];
+    resolved_check [label="Problem\ngelöst?", shape=diamond];
+    feedback [label="Rückfrage\nan Kunde", shape=box];
+    close [label="Ticket\nschließen", shape=box];
+    done [label="Abgeschlossen", shape=ellipse];
+
+    start -> classify;
+    classify -> severity;
+    severity -> l1 [label="niedrig"];
+    severity -> l2 [label="mittel"];
+    severity -> escalate [label="hoch"];
+    l1 -> resolved_check;
+    l2 -> resolved_check;
+    resolved_check -> close [label="ja"];
+    resolved_check -> feedback [label="nein"];
+    feedback -> classify;
+    close -> done;
+}
