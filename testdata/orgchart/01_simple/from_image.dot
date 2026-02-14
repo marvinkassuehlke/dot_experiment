@@ -1,0 +1,25 @@
+digraph OrgChart {
+    rankdir=TB;
+    node [shape=box, style=rounded];
+
+    maria [label="Maria Schmidt\nGeschäftsführung"];
+    thomas [label="Thomas Müller\nVertriebsleitung"];
+    lisa [label="Lisa Weber\nIT-Leitung"];
+    frank [label="Frank Koch\nHR-Leitung"];
+    anna [label="Anna Braun\nVertrieb"];
+    peter [label="Peter Schulz\nVertrieb"];
+    max [label="Max Fischer\nEntwicklung"];
+    julia [label="Julia Becker\nEntwicklung"];
+    sarah [label="Sarah Lang\nPersonal"];
+    tim [label="Tim Werner\nPersonal"];
+
+    maria -> thomas;
+    maria -> lisa;
+    maria -> frank;
+    thomas -> anna;
+    thomas -> peter;
+    lisa -> max;
+    lisa -> julia;
+    frank -> sarah;
+    frank -> tim;
+}

@@ -1,0 +1,91 @@
+digraph OrgChart {
+    rankdir=TB;
+    node [shape=box, style=rounded];
+    compound=true;
+
+    subgraph cluster_holding {
+        label="Holding AG";
+        style=filled;
+        fillcolor=white;
+
+        susanne [label="Susanne Engel\nGeschäftsführerin\nVorstandsvorsitzende"];
+        margarete [label="Margarete Winter\nCFO"];
+        jens [label="Prof. Dr. Jens Reuter\nCTO"];
+
+        susanne -> margarete;
+        susanne -> jens;
+    }
+
+    subgraph cluster_tochter_a {
+        label="Tochter A — Manufacturing";
+        style=filled;
+        fillcolor="#f8d0d0";
+
+        robert [label="Robert Maier\nGeschäftsführer"];
+        helmut [label="Helmut Braun\nProduktionsleitung"];
+        ingrid [label="Ingrid Falk\nQualitätsmanagement"];
+        thomas_h [label="Thomas Haas\nLogistik"];
+
+        robert -> helmut;
+        robert -> ingrid;
+        robert -> thomas_h;
+
+        karl [label="Karl Berger\nFertigung"];
+        gisela [label="Gisela Schuster\nFertigung"];
+        manfred [label="Manfred Roth\nQM-Prüfer"];
+        birgit [label="Birgit Seidel\nLager"];
+        dieter [label="Dieter Krause\nVersand"];
+
+        helmut -> karl;
+        helmut -> gisela;
+        ingrid -> manfred;
+        thomas_h -> birgit;
+        thomas_h -> dieter;
+    }
+
+    subgraph cluster_tochter_b {
+        label="Tochter B — Services";
+        style=filled;
+        fillcolor="#fffacd";
+
+        martin [label="Martin Scholz\nConsulting"];
+        felix [label="Felix Groß\nSenior Consultant"];
+        lena [label="Lena Port\nConsultant"];
+        jan [label="Jan Dietrich\nConsultant"];
+        renate [label="Renate Sommer\nSupport"];
+        katrin [label="Katrin Jäger\n1st Level Support"];
+        tobias [label="Tobias Pfeiffer\n2nd Level Support"];
+
+        martin -> felix;
+        martin -> lena;
+        martin -> jan;
+        renate -> katrin;
+        renate -> tobias;
+    }
+
+    subgraph cluster_tochter_c {
+        label="Tochter C — Digital";
+        style=filled;
+        fillcolor="#d0e8f8";
+
+        viktor [label="Viktor Novak\nGeschäftsführer"];
+        sophie [label="Sophie Keller\nEntwicklungsleitung"];
+        lukas [label="Lukas Bruns\nFullstack Developer"];
+        marie [label="Marie Henkel\nFullstack Developer"];
+        fabian [label="Fabian Wolf\nMobile Developer"];
+        elena [label="Elena Kraft\nData Analyst"];
+        stefan_w [label="Stefan Weber\nML Engineer"];
+
+        viktor -> sophie;
+        sophie -> lukas;
+        sophie -> marie;
+        sophie -> fabian;
+        viktor -> elena;
+        viktor -> stefan_w;
+    }
+
+    susanne -> robert [label="kontrolliert als"];
+    susanne -> martin [label="kontrolliert als"];
+    susanne -> renate [label="kontrolliert als"];
+    susanne -> viktor [label="kontrolliert als"];
+}

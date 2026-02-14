@@ -1,0 +1,64 @@
+digraph OrgChart {
+    rankdir=TB;
+    node [shape=box, style=rounded];
+
+    klaus [label="Dr. Klaus Richter\nCEO"];
+
+    stefan [label="Stefan Hoffmann\nVertriebsleitung"];
+    claudia [label="Claudia Neumann\nProduktleitung"];
+    petra [label="Petra Zimmermann\nProjektleitung Alpha"];
+    markus [label="Markus Wagner\nProjektleitung Beta"];
+    andreas [label="Andreas Schäfer\nTechnikleitung"];
+
+    bernd [label="Bernd Meier\nPartner Management"];
+    anja [label="Anja Schwarz\nSales Operations"];
+    oliver [label="Oliver Vogel\nSales Operations"];
+    nina [label="Nina Hartmann\nInside Sales"];
+    ralf [label="Ralf Bauer\nInside Sales"];
+    monika [label="Monika Krüger\nInside Sales"];
+    uwe [label="Uwe Friedrich\nAußendienst"];
+    karin [label="Karin Wolf\nAußendienst"];
+    dirk [label="Dirk Schröder\nAußendienst"];
+    heike [label="Heike Lorenz\nPartner Management"];
+    sabine [label="Sabine Keller\nKey Account Manager"];
+    joerg [label="Jörg Lehmann\nKey Account Manager"];
+
+    tanja [label="Tanja Fuchs\nProduct Manager"];
+    laura [label="Laura Berger\nProduct Manager"];
+    michael [label="Michael Horn\nProduct Manager"];
+
+    sandra [label="Sandra Baumann\nFrontend Engineer"];
+    christian [label="Christian Weiß\nBackend Engineer"];
+
+    eva [label="Eva Schmitt\nData Engineer"];
+    patrick [label="Patrick Köhler\nDevOps Engineer"];
+
+    klaus -> stefan;
+    klaus -> claudia;
+    klaus -> petra;
+    klaus -> markus;
+    klaus -> andreas;
+
+    stefan -> bernd;
+    stefan -> anja;
+    stefan -> oliver;
+    stefan -> nina;
+    stefan -> ralf;
+    stefan -> monika;
+    stefan -> uwe;
+    stefan -> karin;
+    stefan -> dirk;
+    stefan -> heike;
+    stefan -> sabine;
+    stefan -> joerg;
+
+    claudia -> tanja;
+    claudia -> laura;
+    claudia -> michael;
+
+    petra -> sandra;
+    petra -> christian;
+
+    andreas -> eva;
+    andreas -> patrick;
+}
