@@ -1,0 +1,47 @@
+digraph Rechnungsfreigabe {
+  rankdir=TB;
+  compound=true;
+  label="Rechnungsfreigabe";
+
+  subgraph cluster_Buchhaltung {
+    label="Buchhaltung";
+    style=filled;
+    color=lightblue;
+
+    Start [shape=ellipse, label="Start"];
+    Rechnung_erfassen [shape=box, label="Rechnung\nerfassen"];
+    XOR_Betrag [shape=diamond, label="XOR\nBetrag < 1000?"];
+    Automatische_Freigabe [shape=box, label="Automatische\nFreigabe"];
+    AND_Split [shape=diamond, label="AND\n(Split)", style="filled", fillcolor=gold];
+    Buchung_erstellen [shape=box, label="Buchung\nerstellen"];
+    Beleg_archivieren [shape=box, label="Beleg\narchivieren"];
+    AND_Join [shape=diamond, label="AND\n(Join)", style="filled", fillcolor=gold];
+    Zahlung_veranlassen [shape=box, label="Zahlung\nveranlassen"];
+    Ende [shape=ellipse, label="Ende"];
+
+    Start -> Rechnung_erfassen;
+    Rechnung_erfassen -> XOR_Betrag;
+    XOR_Betrag -> Automatische_Freigabe [label="ja"];
+    Automatische_Freigabe -> AND_Split;
+    AND_Split -> Buchung_erstellen;
+    AND_Split -> Beleg_archivieren;
+    Buchung_erstellen -> AND_Join;
+    Beleg_archivieren -> AND_Join;
+    AND_Join -> Zahlung_veranlassen;
+    Zahlung_veranlassen -> Ende;
+  }
+
+  subgraph cluster_Abteilungsleiter {
+    label="Abteilungsleiter";
+    style=filled;
+    color=lightyellow;
+    AL_placeholder [shape=point, style=invis];
+  }
+
+  subgraph cluster_Geschaeftsfuehrung {
+    label="Geschäftsführung";
+    style=filled;
+    color=lightgreen;
+    GF_placeholder [shape=point, style=invis];
+  }
+}

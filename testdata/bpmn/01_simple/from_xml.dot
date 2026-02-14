@@ -1,0 +1,48 @@
+digraph Urlaubsantrag {
+  rankdir=LR;
+  compound=true;
+
+  subgraph cluster_Mitarbeiter {
+    label="Mitarbeiter";
+    style=filled;
+    color=lightblue;
+
+    StartEvent_1 [shape=ellipse, label="Start"];
+    Task_AntragStellen [shape=box, label="Urlaubsantrag stellen"];
+    Task_AblehnungErhalten [shape=box, label="Ablehnung erhalten"];
+    EndEvent_Abgelehnt [shape=ellipse, label="Ende (abgelehnt)"];
+
+    StartEvent_1 -> Task_AntragStellen;
+    Task_AblehnungErhalten -> EndEvent_Abgelehnt;
+  }
+
+  subgraph cluster_Vorgesetzter {
+    label="Vorgesetzter";
+    style=filled;
+    color=lightyellow;
+
+    Task_AntragPruefen [shape=box, label="Antrag prüfen"];
+    Gateway_Genehmigt [shape=diamond, label="Genehmigt?"];
+
+    Task_AntragPruefen -> Gateway_Genehmigt;
+  }
+
+  subgraph cluster_HR {
+    label="HR";
+    style=filled;
+    color=lightgreen;
+
+    Task_Eintragen [shape=box, label="Im System eintragen"];
+    Task_Informieren [shape=box, label="Mitarbeiter informieren"];
+    EndEvent_Genehmigt [shape=ellipse, label="Ende (genehmigt)"];
+
+    Task_Eintragen -> Task_Informieren;
+    Task_Informieren -> EndEvent_Genehmigt;
+  }
+
+  // Message Flows
+  Task_AntragStellen -> Task_AntragPruefen;
+  Gateway_Genehmigt -> Task_Eintragen [label="ja"];
+  Gateway_Genehmigt -> Task_AblehnungErhalten [label="nein"];
+  Task_Informieren -> EndEvent_Genehmigt;
+}

@@ -1,0 +1,58 @@
+digraph Onboarding {
+  rankdir=TB;
+  compound=true;
+
+  Neuer_Mitarbeiter [shape=ellipse, label="Neuer\nMitarbeiter"];
+
+  subgraph cluster_IT {
+    label="IT";
+    style=filled;
+    color=lightblue;
+
+    Laptop_bereitstellen [shape=box, label="Laptop\nbereitstellen"];
+    Zugaenge_einrichten [shape=box, label="Zugänge\neinrichten"];
+    Software_installieren [shape=box, label="Software\ninstallieren"];
+
+    Laptop_bereitstellen -> Zugaenge_einrichten;
+    Zugaenge_einrichten -> Software_installieren;
+  }
+
+  subgraph cluster_HR {
+    label="HR";
+    style=filled;
+    color=lightyellow;
+
+    Vertrag_finalisieren [shape=box, label="Vertrag\nfinalisieren"];
+    Schulungen_planen [shape=box, label="Schulungen\nplanen"];
+    Willkommenspaket [shape=box, label="Willkommenspaket"];
+
+    Vertrag_finalisieren -> Schulungen_planen;
+    Schulungen_planen -> Willkommenspaket;
+  }
+
+  subgraph cluster_Fachbereich {
+    label="Fachbereich";
+    style=filled;
+    color=lightgreen;
+
+    Einarbeitungsplan_erstellen [shape=box, label="Einarbeitungsplan\nerstellen"];
+    Mentor_zuweisen [shape=box, label="Mentor\nzuweisen"];
+    Erste_Aufgaben_definieren [shape=box, label="Erste Aufgaben\ndefinieren"];
+
+    Einarbeitungsplan_erstellen -> Mentor_zuweisen;
+    Mentor_zuweisen -> Erste_Aufgaben_definieren;
+  }
+
+  Teamlead_Freigabe [shape=box, label="Teamlead-\nFreigabe", style="filled", fillcolor=pink];
+  Onboarding_abgeschlossen [shape=ellipse, label="Onboarding\nabgeschlossen"];
+
+  Neuer_Mitarbeiter -> Laptop_bereitstellen;
+  Neuer_Mitarbeiter -> Vertrag_finalisieren;
+  Neuer_Mitarbeiter -> Einarbeitungsplan_erstellen;
+
+  Software_installieren -> Teamlead_Freigabe;
+  Willkommenspaket -> Teamlead_Freigabe;
+  Erste_Aufgaben_definieren -> Teamlead_Freigabe;
+
+  Teamlead_Freigabe -> Onboarding_abgeschlossen;
+}

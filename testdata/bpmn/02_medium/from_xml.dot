@@ -1,0 +1,47 @@
+digraph Rechnungsfreigabe {
+  rankdir=TB;
+  compound=true;
+  label="Rechnungsfreigabe";
+
+  subgraph cluster_Buchhaltung {
+    label="Buchhaltung";
+    style=filled;
+    color=lightblue;
+
+    StartEvent_1 [shape=ellipse, label="Start"];
+    Task_Erfassen [shape=box, label="Rechnung erfassen"];
+    Gateway_XOR_Betrag [shape=diamond, label="Betrag < 1000?"];
+    Task_AutoFreigabe [shape=box, label="Automatische Freigabe"];
+    Gateway_Parallel_Split [shape=diamond, label="AND (Split)"];
+    Task_Buchung [shape=box, label="Buchung erstellen"];
+    Task_Archiv [shape=box, label="Beleg archivieren"];
+    Gateway_Parallel_Join [shape=diamond, label="AND (Join)"];
+    Task_Zahlung [shape=box, label="Zahlung veranlassen"];
+    EndEvent_1 [shape=ellipse, label="Ende"];
+
+    StartEvent_1 -> Task_Erfassen;
+    Task_Erfassen -> Gateway_XOR_Betrag;
+    Gateway_XOR_Betrag -> Task_AutoFreigabe [label="ja"];
+    Task_AutoFreigabe -> Gateway_Parallel_Split;
+    Gateway_Parallel_Split -> Task_Buchung;
+    Gateway_Parallel_Split -> Task_Archiv;
+    Task_Buchung -> Gateway_Parallel_Join;
+    Task_Archiv -> Gateway_Parallel_Join;
+    Gateway_Parallel_Join -> Task_Zahlung;
+    Task_Zahlung -> EndEvent_1;
+  }
+
+  subgraph cluster_Abteilungsleiter {
+    label="Abteilungsleiter";
+    style=filled;
+    color=lightyellow;
+    AL_placeholder [shape=point, style=invis];
+  }
+
+  subgraph cluster_Geschaeftsfuehrung {
+    label="Geschäftsführung";
+    style=filled;
+    color=lightgreen;
+    GF_placeholder [shape=point, style=invis];
+  }
+}

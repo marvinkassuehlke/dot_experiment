@@ -1,0 +1,46 @@
+digraph Urlaubsantrag {
+  rankdir=LR;
+  compound=true;
+
+  subgraph cluster_Mitarbeiter {
+    label="Mitarbeiter";
+    style=filled;
+    color=lightblue;
+
+    Start [shape=ellipse, label="Start"];
+    Urlaubsantrag_stellen [shape=box, label="Urlaubsantrag\nstellen"];
+    Ablehnung_erhalten [shape=box, label="Ablehnung\nerhalten"];
+    Ende_abgelehnt [shape=ellipse, label="Ende\n(abgelehnt)"];
+
+    Start -> Urlaubsantrag_stellen;
+    Ablehnung_erhalten -> Ende_abgelehnt;
+  }
+
+  subgraph cluster_Vorgesetzter {
+    label="Vorgesetzter";
+    style=filled;
+    color=lightyellow;
+
+    Antrag_pruefen [shape=box, label="Antrag\nprüfen"];
+    Genehmigt [shape=diamond, label="Genehmigt?"];
+
+    Antrag_pruefen -> Genehmigt;
+  }
+
+  subgraph cluster_HR {
+    label="HR";
+    style=filled;
+    color=lightgreen;
+
+    Im_System_eintragen [shape=box, label="Im System\neintragen"];
+    Mitarbeiter_informieren [shape=box, label="Mitarbeiter\ninformieren"];
+    Ende_genehmigt [shape=ellipse, label="Ende\n(genehmigt)"];
+
+    Im_System_eintragen -> Mitarbeiter_informieren;
+    Mitarbeiter_informieren -> Ende_genehmigt;
+  }
+
+  Urlaubsantrag_stellen -> Antrag_pruefen;
+  Genehmigt -> Im_System_eintragen [label="ja"];
+  Genehmigt -> Ablehnung_erhalten [label="nein"];
+}
