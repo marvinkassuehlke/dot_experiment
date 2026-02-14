@@ -1,5 +1,18 @@
 # DOT Translation Study — Ergebnisse
 
+## TL;DR
+
+Business-Diagramme (Prozessmodelle, Organigramme, Ablaufpläne) liegen oft als Bilder oder XML-Dateien vor — Formate, die eine KI nicht direkt analysieren kann. Diese Studie untersucht, ob man solche Diagramme in eine einfache Textform übersetzen kann, die eine KI dann lesen und auf Fehler prüfen kann.
+
+**Ergebnis: Ja, das funktioniert.** Die KI erkennt nach der Übersetzung 87.5% der eingebauten Testfehler und findet darüber hinaus echte Prozessprobleme, die im Original nicht offensichtlich sind — z.B. Engpässe, fehlende Synchronisierung oder Endlosschleifen. In einem Nachtest mit echten Prozessmodellen aus Universitäts-Lehrveranstaltungen lag die Trefferquote bei 100%.
+
+**Zwei Textformate** wurden getestet: DOT (eine technische Graphensprache) und Mermaid (eine einfachere, webfreundliche Variante). Beide funktionieren für die Analyse gleich gut. Aber wenn die KI ein Diagramm aus einem *Bild* übersetzen muss, macht sie in Mermaid deutlich weniger Fehler — weil die Syntax simpler ist und sie weniger Gelegenheit hat, sich zu verschreiben.
+
+**Praktische Empfehlung:**
+- Wenn eine Quelldatei (XML/BPMN) vorliegt → daraus übersetzen, Format egal
+- Wenn nur ein Bild/PDF vorliegt → nach Mermaid übersetzen
+- Für maximale Analysetiefe → beides tun und die Unterschiede als Signal nutzen
+
 ## Hypothese
 
 GraphViz DOT taugt als Zwischenformat, um Business-Diagramme (Flowcharts, BPMN, Orgcharts, Swimlanes) für LLM-Analyse zugänglich zu machen.
