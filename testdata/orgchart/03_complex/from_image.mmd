@@ -1,0 +1,71 @@
+flowchart TB
+    subgraph holding["Holding AG"]
+        vorstand["Dr. Heinrich Brandt\nVorstandsvorsitzender"]
+        cfo["Margarete Winkler\nCFO"]
+        cto["Prof. Dr. Jens Reuter\nCTO"]
+
+        vorstand --> cfo
+        vorstand --> cto
+    end
+
+    subgraph tochter_a["Tochter A — Manufacturing"]
+        a_gf["Robert Maier\nGeschäftsführer"]
+        a_prod["Helmut Stein\nProduktionsleitung"]
+        a_qual["Ingrid Falk\nQualitätsmanagement"]
+        a_log["Werner Haas\nLogistik"]
+        a_prod1["Karl Berger\nFertigung"]
+        a_prod2["Gisela Schuster\nFertigung"]
+        a_qual1["Manfred Roth\nQM-Prüfer"]
+        a_log1["Brigitte Seidel\nLager"]
+        a_log2["Dieter Krause\nVersand"]
+
+        a_gf --> a_prod
+        a_gf --> a_qual
+        a_gf --> a_log
+        a_prod --> a_prod1
+        a_prod --> a_prod2
+        a_qual --> a_qual1
+        a_log --> a_log1
+        a_log --> a_log2
+    end
+
+    subgraph tochter_b["Tochter B — Services"]
+        b_gf["Susanne Engel\nGeschäftsführerin"]
+        b_consult["Martin Schenk\nConsulting"]
+        b_support["Renate Böhm\nSupport"]
+        b_c1["Felix Groß\nSenior Consultant"]
+        b_c2["Lena Pohl\nConsultant"]
+        b_c3["Jan Dietrich\nConsultant"]
+        b_s1["Katrin Jäger\n1st Level Support"]
+        b_s2["Tobias Pfeiffer\n2nd Level Support"]
+
+        b_gf --> b_consult
+        b_gf --> b_support
+        b_consult --> b_c1
+        b_consult --> b_c2
+        b_consult --> b_c3
+        b_support --> b_s1
+        b_support --> b_s2
+    end
+
+    subgraph tochter_c["Tochter C — Digital"]
+        c_gf["Viktor Nowak\nGeschäftsführer"]
+        c_dev["Sophie Klein\nEntwicklungsleitung"]
+        c_data["Armin Scholz\nData Science"]
+        c_d1["Lukas Bruns\nFullstack Developer"]
+        c_d2["Marie Henkel\nFullstack Developer"]
+        c_d3["Fabian Wolff\nMobile Developer"]
+        c_da1["Elena Kraft\nData Analyst"]
+        c_da2["Niklas Franke\nML Engineer"]
+
+        c_gf --> c_dev
+        c_gf --> c_data
+        c_dev --> c_d1
+        c_dev --> c_d2
+        c_dev --> c_d3
+        c_data --> c_da1
+        c_data --> c_da2
+    end
+
+    a_gf -->|berichtet an| vorstand
+    b_gf -->|berichtet an| vorstand

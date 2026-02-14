@@ -1,0 +1,68 @@
+flowchart TB
+    ceo["Dr. Klaus Richter\nCEO"]
+
+    vertrieb["Stefan Hoffmann\nVertriebsleitung"]
+    produkt["Claudia Neumann\nProduktleitung"]
+    technik["Andreas Schäfer\nTechnikleitung"]
+    alpha["Petra Zimmermann\nProjektleitung Alpha"]
+    beta["Markus Wagner\nProjektleitung Beta"]
+
+    ceo --> vertrieb
+    ceo --> produkt
+    ceo --> technik
+    ceo --> alpha
+    ceo --> beta
+
+    v1["Sabine Keller\nKey Account Manager"]
+    v2["Jörg Lehmann\nKey Account Manager"]
+    v3["Nina Hartmann\nInside Sales"]
+    v4["Ralf Bauer\nInside Sales"]
+    v5["Monika Krüger\nInside Sales"]
+    v6["Uwe Friedrich\nAußendienst"]
+    v7["Karin Wolf\nAußendienst"]
+    v8["Dirk Schröder\nAußendienst"]
+    v9["Heike Lorenz\nPartner Management"]
+    v10["Bernd Meier\nPartner Management"]
+    v11["Anja Schwarz\nSales Operations"]
+    v12["Oliver Vogel\nSales Operations"]
+
+    vertrieb --> v1
+    vertrieb --> v2
+    vertrieb --> v3
+    vertrieb --> v4
+    vertrieb --> v5
+    vertrieb --> v6
+    vertrieb --> v7
+    vertrieb --> v8
+    vertrieb --> v9
+    vertrieb --> v10
+    vertrieb --> v11
+    vertrieb --> v12
+
+    p1["Laura Berger\nProduct Manager"]
+    p2["Michael Horn\nProduct Manager"]
+    p3["Tanja Fuchs\nProduct Manager"]
+
+    produkt --> p1
+    produkt --> p2
+    produkt --> p3
+
+    t1["Christian Weiß\nBackend Engineer"]
+    t2["Sandra Baumann\nFrontend Engineer"]
+    t3["Patrick Köhler\nDevOps Engineer"]
+    t4["Eva Schmitt\nData Engineer"]
+
+    technik --> t1
+    technik --> t2
+    technik --> t3
+    technik --> t4
+
+    alpha -.-> v1
+    alpha -.-> p1
+    alpha -.-> t1
+    alpha -.-> t2
+
+    beta -.-> v2
+    beta -.-> p2
+    beta -.-> t3
+    beta -.-> t4

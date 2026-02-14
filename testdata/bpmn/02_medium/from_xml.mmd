@@ -1,0 +1,30 @@
+flowchart TB
+    subgraph Pool_Rechnungsfreigabe ["Rechnungsfreigabe"]
+        subgraph Lane_Buchhaltung ["Buchhaltung"]
+            StartEvent_1(("Start"))
+            Task_Erfassen["Rechnung erfassen"]
+            Gateway_XOR_Betrag{"Betrag < 1000?"}
+            Task_AutoFreigabe["Automatische Freigabe"]
+            Gateway_Parallel_Split{"AND (Split)"}
+            Task_Buchung["Buchung erstellen"]
+            Task_Archiv["Beleg archivieren"]
+            Gateway_Parallel_Join{"AND (Join)"}
+            Task_Zahlung["Zahlung veranlassen"]
+            EndEvent_1(("Ende"))
+        end
+        subgraph Lane_Abteilungsleiter ["Abteilungsleiter"]
+        end
+        subgraph Lane_Geschaeftsfuehrung ["Geschäftsführung"]
+        end
+    end
+
+    StartEvent_1 --> Task_Erfassen
+    Task_Erfassen --> Gateway_XOR_Betrag
+    Gateway_XOR_Betrag -->|"ja"| Task_AutoFreigabe
+    Task_AutoFreigabe --> Gateway_Parallel_Split
+    Gateway_Parallel_Split --> Task_Buchung
+    Gateway_Parallel_Split --> Task_Archiv
+    Task_Buchung --> Gateway_Parallel_Join
+    Task_Archiv --> Gateway_Parallel_Join
+    Gateway_Parallel_Join --> Task_Zahlung
+    Task_Zahlung --> EndEvent_1

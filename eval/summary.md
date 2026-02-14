@@ -335,16 +335,61 @@ Bild→DOT und XML→DOT erzeugen unterschiedliche Übersetzungen. Die Differenz
 
 | Szenario | Empfohlener Pfad | Begründung |
 |----------|-----------------|------------|
-| BPMN-Prozessreview | XML→DOT→Analyse | Höchste Strukturtreue, erkennt auch XML-Defekte |
-| Grafisches Artefakt ohne Quelldatei | Bild→DOT→Analyse | Einziger Weg, erzeugt LLM-lesbare Repräsentation |
+| BPMN-Prozessreview | XML→DOT/Mermaid→Analyse | Höchste Strukturtreue, erkennt auch XML-Defekte |
+| Grafisches Artefakt ohne Quelldatei | **Bild→Mermaid→Analyse** | Mermaid reduziert Übersetzungsfehler signifikant (s. Abschnitt 7) |
 | Tiefenanalyse (Consulting) | Dual Translation + Diff | Divergenz als Signal, zwei Perspektiven auf denselben Prozess |
-| Modell-Assessment (Lehre) | DOT-Diff Teilnehmer vs. Referenz | Automatisierbare Strukturvergleiche (bei semantischem Label-Matching) |
-| Prozess-Dokumentation | DOT als Zwischenprodukt | Kompakt, versionierbar, renderbar, LLM-analysierbar |
+| Modell-Assessment (Lehre) | Graph-Diff Teilnehmer vs. Referenz | Automatisierbare Strukturvergleiche (bei semantischem Label-Matching) |
+| Prozess-Dokumentation | DOT/Mermaid als Zwischenprodukt | Kompakt, versionierbar, renderbar, LLM-analysierbar |
+
+## 7. Format-Vergleich: DOT vs. Mermaid
+
+### Hintergrund
+
+Das Paper ["What is the Best Process Model Representation?"](https://arxiv.org/html/2507.11356v1) (2025) verglich 9 Textformate für LLM-basierte Prozessmodell-Generierung und kürte Mermaid zum Gesamtsieger. DOT/GraphViz lag im Mittelfeld. Die Frage: **Profitiert unsere Pipeline (Übersetzung + Analyse) ebenfalls von Mermaid als Zielformat?**
+
+### Methodik
+
+Die 4 schwächsten DOT-Cases aus Phase 1-3 wurden parallel in Mermaid übersetzt:
+- 2 Orgcharts (Bild→Mermaid): Die Cases mit den schlechtesten DOT-Ergebnissen
+- 2 BPMN (XML→Mermaid): Die Cases mit den schlechtesten DOT-Ergebnissen
+
+Vergleich via `compare_mermaid.py` (label-basierter Abgleich gegen Ground-Truth-DOT).
+
+### Ergebnisse
+
+| Case | Quelle | Metrik | DOT | Mermaid | Delta |
+|------|--------|--------|-----|---------|-------|
+| Orgchart 03_complex | image | Node Recall | 50.0% | **100%** | **+50.0pp** |
+| Orgchart 03_complex | image | Edge Recall | 7.7% | **100%** | **+92.3pp** |
+| Orgchart 02_medium | image | Node Recall | 100% | 100% | 0 |
+| Orgchart 02_medium | image | Edge Recall | 75.0% | **100%** | **+25.0pp** |
+| BPMN 03_complex | xml | Node Recall | 91.7% | 91.7% | 0 |
+| BPMN 03_complex | xml | Edge Recall | 46.2% | 46.2% | 0 |
+| BPMN 02_medium | xml | Node Recall | 81.8% | 81.8% | 0 |
+| BPMN 02_medium | xml | Edge Recall | 80.0% | 80.0% | 0 |
+
+### Interpretation
+
+**Bild→Text: Mermaid dramatisch besser.** Der schlimmste Case (Orgchart 03: 28 Knoten, 7.7% Edge Recall in DOT) springt auf 100% in Mermaid. DOT-Syntax war der Bottleneck, nicht das Bildverständnis. Mermaid hat weniger Syntax-Overhead (`-->` statt `[shape=box, label="..."]`), weniger Freiheitsgrade (keine Attribute wie color, style, fillcolor), und mehr Präsenz in LLM-Trainingsdaten.
+
+**XML→Text: Identisch.** Exakt dieselben Scores bei beiden Formaten. Wenn die Quelle strukturiertes XML ist, macht das Zielformat keinen Unterschied — die Fehler kommen vom XML-Verständnis (Gateway-Semantik, Flow-Mapping), nicht vom Schreiben des Outputs.
+
+### Korrektur der Empfehlung
+
+Die ursprüngliche Empfehlung (Abschnitt 6) wird ergänzt:
+
+| Szenario | Empfohlener Pfad | Begründung |
+|----------|-----------------|------------|
+| Bild/PDF ohne Quelldatei | **Bild→Mermaid→Analyse** | Mermaid reduziert Übersetzungsfehler bei komplexen Diagrammen signifikant |
+| XML-Quellen (BPMN, draw.io) | XML→DOT oder XML→Mermaid | Kein Unterschied — Format ist Geschmackssache |
+| Rendering/Visualisierung | DOT (GraphViz) | Mächtigerer Renderer (Subgraph-Styles, Attribute, Layouts) |
+| Web-Integration | Mermaid | Native Unterstützung in GitHub, Notion, Confluence |
 
 ### Was diese Studie nicht beantwortet
 
-- **Skalierung**: Wie verhält sich DOT bei Diagrammen mit 100+ Knoten?
-- **Andere Diagrammtypen**: Sequenzdiagramme, ER-Diagramme, Zustandsautomaten — funktioniert DOT dort genauso?
-- **Multi-LLM-Vergleich**: Liefern GPT-4, Gemini, Llama vergleichbare Ergebnisse bei DOT-Analyse?
-- **Bild→DOT mit echten Dokumenten**: Gescannte Whiteboards, fotografierte Post-Its, unsaubere Handzeichnungen
-- **Automatisierungsgrad**: Wie weit lässt sich die Pipeline (Upload → DOT → Analyse → Report) ohne menschliche Intervention betreiben?
+- **Skalierung**: Wie verhält sich DOT/Mermaid bei Diagrammen mit 100+ Knoten?
+- **Andere Diagrammtypen**: Sequenzdiagramme, ER-Diagramme, Zustandsautomaten — funktioniert DOT/Mermaid dort genauso?
+- **Multi-LLM-Vergleich**: Liefern GPT-4, Gemini, Llama vergleichbare Ergebnisse?
+- **Bild→Text mit echten Dokumenten**: Gescannte Whiteboards, fotografierte Post-Its, unsaubere Handzeichnungen
+- **Mermaid-Analyse vs. DOT-Analyse**: Liefert die Defekt-Analyse auf Mermaid-Input dieselbe Qualität wie auf DOT-Input?
+- **Automatisierungsgrad**: Wie weit lässt sich die Pipeline (Upload → Text → Analyse → Report) ohne menschliche Intervention betreiben?

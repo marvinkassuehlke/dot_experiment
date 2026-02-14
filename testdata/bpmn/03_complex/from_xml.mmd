@@ -1,0 +1,45 @@
+flowchart TB
+    StartEvent_1(("Neuer Mitarbeiter"))
+    Gateway_Split{"Parallel Start"}
+
+    StartEvent_1 --> Gateway_Split
+
+    subgraph IT
+        Task_Laptop["Laptop bereitstellen"]
+        Task_Zugaenge["Zugänge einrichten"]
+        Task_Software["Software installieren"]
+
+        Task_Laptop --> Task_Zugaenge
+        Task_Zugaenge --> Task_Software
+    end
+
+    subgraph HR
+        Task_Vertrag["Vertrag finalisieren"]
+        Task_Schulungen["Schulungen planen"]
+        Task_Willkommen["Willkommenspaket"]
+
+        Task_Vertrag --> Task_Schulungen
+        Task_Schulungen --> Task_Willkommen
+    end
+
+    subgraph Fachbereich
+        Task_Einarbeitung["Einarbeitungsplan erstellen"]
+        Task_Mentor["Mentor zuweisen"]
+        Task_Aufgaben["Erste Aufgaben definieren"]
+
+        Task_Einarbeitung --> Task_Mentor
+        Task_Mentor --> Task_Aufgaben
+    end
+
+    Gateway_Split --> Task_Laptop
+    Gateway_Split --> Task_Vertrag
+    Gateway_Split --> Task_Einarbeitung
+
+    Task_Software --> Task_Freigabe
+    Task_Willkommen --> Task_Freigabe
+    Task_Aufgaben --> Task_Freigabe
+
+    Task_Freigabe["Teamlead-Freigabe"]
+    EndEvent_1(("Onboarding abgeschlossen"))
+
+    Task_Freigabe --> EndEvent_1
