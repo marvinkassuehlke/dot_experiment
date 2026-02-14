@@ -1,0 +1,70 @@
+digraph Warenversand {
+    rankdir=LR;
+    fontname="Arial";
+    node [fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9];
+    compound=true;
+
+    subgraph cluster_pool {
+        label="Warenversand\nHardware-Händler";
+        style=solid;
+
+        subgraph cluster_leiter_logistik {
+            label="Leiter Logistik";
+            style=filled;
+            color=lightblue;
+            fillcolor="#E8F4FD";
+
+            Task_12j0pib [shape=box, label="Versicherung\nabschließen"];
+        }
+
+        subgraph cluster_sekretariat {
+            label="Sekretariat";
+            style=filled;
+            color=lightyellow;
+            fillcolor="#FFF9E6";
+
+            StartEvent_1 [shape=ellipse, label="Artikel\nzu versenden"];
+            ParallelGateway_02fgrfq [shape=diamond, label="AND"];
+            Task_0vaxgaa [shape=box, label="Versandart\nklären"];
+            ExclusiveGateway_1mpgzhg [shape=diamond, label="Sonderversand?"];
+            InclusiveGateway_0p2e5vq [shape=diamond, label="OR"];
+            Task_0jsoxba [shape=box, label="Paketschein\nausfüllen"];
+            Task_0e6hvnj [shape=box, label="Angebote von\n3 Spediteuren\neinholen"];
+            Task_0s79ile [shape=box, label="Spediteur\nbeauftragen"];
+            InclusiveGateway_1dgb4sg [shape=diamond, label="OR"];
+            ExclusiveGateway_1ouv9kf [shape=diamond, label="XOR"];
+        }
+
+        subgraph cluster_lagerarbeiter {
+            label="Lagerarbeiter";
+            style=filled;
+            color=lightgreen;
+            fillcolor="#E8F5E9";
+
+            Task_05ftug5 [shape=box, label="Ware verpacken"];
+            ExclusiveGateway_0z5sib0 [shape=diamond, label="XOR"];
+            Task_0sl26uo [shape=box, label="Ware bereitstellen"];
+            EndEvent_1fx9yp3 [shape=ellipse, label="Warenversand\nvorbereitet"];
+        }
+    }
+
+    // Sequence Flows
+    StartEvent_1 -> ParallelGateway_02fgrfq;
+    ParallelGateway_02fgrfq -> Task_0vaxgaa;
+    ParallelGateway_02fgrfq -> Task_05ftug5;
+    Task_0vaxgaa -> ExclusiveGateway_1mpgzhg;
+    ExclusiveGateway_1mpgzhg -> InclusiveGateway_0p2e5vq [label="nein"];
+    ExclusiveGateway_1mpgzhg -> Task_0e6hvnj [label="ja"];
+    InclusiveGateway_0p2e5vq -> Task_12j0pib [label="Versicherung\nerforderlich"];
+    InclusiveGateway_0p2e5vq -> Task_0jsoxba [label="immer"];
+    Task_12j0pib -> InclusiveGateway_1dgb4sg;
+    Task_0jsoxba -> InclusiveGateway_1dgb4sg;
+    InclusiveGateway_1dgb4sg -> ExclusiveGateway_1ouv9kf;
+    Task_0e6hvnj -> Task_0s79ile;
+    Task_0s79ile -> ExclusiveGateway_1ouv9kf;
+    ExclusiveGateway_1ouv9kf -> ExclusiveGateway_0z5sib0;
+    Task_05ftug5 -> ExclusiveGateway_0z5sib0;
+    ExclusiveGateway_0z5sib0 -> Task_0sl26uo;
+    Task_0sl26uo -> EndEvent_1fx9yp3;
+}

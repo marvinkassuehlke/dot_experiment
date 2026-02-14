@@ -1,0 +1,101 @@
+digraph Selbstbedienungsrestaurant {
+    rankdir=LR;
+    compound=true;
+    fontname="Helvetica";
+    node [fontname="Helvetica", fontsize=10];
+    edge [fontname="Helvetica", fontsize=9];
+
+    subgraph cluster_gast {
+        label="Gast\nNahrungsaufnahme";
+        style=rounded;
+        color=black;
+
+        StartEvent_1jrp9jr [label="Hunger\nfestgestellt", shape=ellipse];
+        Task_1kt8dzo [label="Restaurant\nbetreten", shape=box];
+        Task_1udyby3 [label="Gericht\nauswählen", shape=box];
+        IntermediateCatchEvent_1nu2fvu [label="an der Reihe", shape=ellipse];
+        Task_0a2rm9v [label="Bestellung\naufgeben", shape=box];
+        Task_12h2fs9 [label="Betrag\nbezahlen", shape=box];
+        Task_1jlgbwe [label="Pieper\nentgegennehmen", shape=box];
+        IntermediateCatchEvent_1r5wlb4 [label="Essen\nabholbereit", shape=ellipse];
+        Task_0o0pue9 [label="Essen\nabholen", shape=box];
+        Task_07amhtq [label="Mahlzeit\nverzehren", shape=box];
+        EndEvent_0t0z07x [label="Hunger\ngestillt", shape=ellipse];
+
+        StartEvent_1jrp9jr -> Task_1kt8dzo;
+        Task_1kt8dzo -> Task_1udyby3;
+        Task_1udyby3 -> IntermediateCatchEvent_1nu2fvu;
+        IntermediateCatchEvent_1nu2fvu -> Task_0a2rm9v;
+        Task_0a2rm9v -> Task_12h2fs9;
+        Task_12h2fs9 -> Task_1jlgbwe;
+        Task_1jlgbwe -> IntermediateCatchEvent_1r5wlb4;
+        IntermediateCatchEvent_1r5wlb4 -> Task_0o0pue9;
+        Task_0o0pue9 -> Task_07amhtq;
+        Task_07amhtq -> EndEvent_0t0z07x;
+    }
+
+    subgraph cluster_angestellter {
+        label="Angestellter\nBestellungsbearbeitung";
+        style=rounded;
+        color=black;
+
+        StartEvent_02hitoh [label="Bestellung\nerhalten", shape=ellipse];
+        Task_1y7mm27 [label="Bestellung\neingeben", shape=box];
+        Task_1ng51gy [label="Geld\nkassieren", shape=box];
+        Task_03wsmkw [label="Pieper\neinstellen", shape=box];
+        Task_0ttgn0d [label="Pieper\nübergeben", shape=box];
+        Task_1wgretj [label="Koch\ninformieren", shape=box];
+        IntermediateCatchEvent_1pl0nlh [label="Essen\nfertig", shape=ellipse];
+        Task_12zp7cy [label="Pieper\nauslösen", shape=box];
+        EventBasedGateway_1qyi8l9 [label="", shape=diamond];
+        IntermediateCatchEvent_1rch6yh [label="Kunde\nerscheint", shape=ellipse];
+        Task_1a48xz1 [label="Essen\nübergeben", shape=box];
+        EndEvent_1mxdcfl [label="Bestellung\nbearbeitet", shape=ellipse];
+        IntermediateCatchEvent_0nhl104 [label="5 Minuten", shape=ellipse];
+        Task_0rpvccw [label="Kunden\nausrufen", shape=box];
+
+        StartEvent_02hitoh -> Task_1y7mm27;
+        Task_1y7mm27 -> Task_1ng51gy;
+        Task_1ng51gy -> Task_03wsmkw;
+        Task_03wsmkw -> Task_0ttgn0d;
+        Task_0ttgn0d -> Task_1wgretj;
+        Task_1wgretj -> IntermediateCatchEvent_1pl0nlh;
+        IntermediateCatchEvent_1pl0nlh -> Task_12zp7cy;
+        Task_12zp7cy -> EventBasedGateway_1qyi8l9;
+        EventBasedGateway_1qyi8l9 -> IntermediateCatchEvent_1rch6yh;
+        IntermediateCatchEvent_1rch6yh -> Task_1a48xz1;
+        Task_1a48xz1 -> EndEvent_1mxdcfl;
+        EventBasedGateway_1qyi8l9 -> IntermediateCatchEvent_0nhl104;
+        IntermediateCatchEvent_0nhl104 -> Task_0rpvccw;
+        Task_0rpvccw -> EventBasedGateway_1qyi8l9;
+    }
+
+    subgraph cluster_koch {
+        label="Koch\nMahlzeitzubereitung";
+        style=rounded;
+        color=black;
+
+        StartEvent_0zymmrx [label="Mahlzeit\nzuzubereiten", shape=ellipse];
+        Task_0av6xl6 [label="Mahlzeit\nzubereiten", shape=box];
+        Task_1tdsk5o [label="Essen in\nDurchreiche stellen", shape=box];
+        Task_0ot5dif [label="Angestellten\ninformieren", shape=box];
+        EndEvent_1pmnzaw [label="Mahlzeit\nzubereitet", shape=ellipse];
+
+        StartEvent_0zymmrx -> Task_0av6xl6;
+        Task_0av6xl6 -> Task_1tdsk5o;
+        Task_1tdsk5o -> Task_0ot5dif;
+        Task_0ot5dif -> EndEvent_1pmnzaw;
+    }
+
+    // Message Flows (zwischen Pools, gestrichelt)
+    Task_0a2rm9v -> StartEvent_02hitoh [style=dashed, color=blue, label="Bestellung"];
+    Task_1ng51gy -> Task_12h2fs9 [style=dashed, color=blue, label="Betrag"];
+    Task_12h2fs9 -> Task_1ng51gy [style=dashed, color=blue, label="Zahlung"];
+    Task_0ttgn0d -> Task_1jlgbwe [style=dashed, color=blue, label="Pieper"];
+    Task_12zp7cy -> IntermediateCatchEvent_1r5wlb4 [style=dashed, color=blue, label="Signal"];
+    Task_0o0pue9 -> IntermediateCatchEvent_1rch6yh [style=dashed, color=blue, label="Ankunft"];
+    Task_1a48xz1 -> Task_0o0pue9 [style=dashed, color=blue, label="Essen"];
+    Task_1wgretj -> StartEvent_0zymmrx [style=dashed, color=blue, label="Auftrag"];
+    Task_0ot5dif -> IntermediateCatchEvent_1pl0nlh [style=dashed, color=blue, label="Fertigmeldung"];
+    Task_0rpvccw -> EndEvent_0t0z07x [style=dashed, color=blue, label="Ausruf", lhead=cluster_gast];
+}

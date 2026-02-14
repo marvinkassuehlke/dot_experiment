@@ -1,0 +1,52 @@
+digraph Regressnahme {
+    rankdir=LR;
+    label="Versicherung";
+    labelloc=t;
+    fontsize=14;
+    compound=true;
+
+    subgraph cluster_regressstelle {
+        label="Regressstelle";
+        style=dashed;
+
+        start [label="Start\n(Nachricht)" shape=ellipse];
+        fall_pruefen [label="Fall prüfen" shape=box];
+        gw1 [label="" shape=diamond];
+        end1 [label="Ende" shape=ellipse];
+        zahlungsanforderung [label="Zahlungs-\nanforderung" shape=box];
+        zwischenereignis [label="Zwischen-\nereignis" shape=ellipse];
+        zahlungseingang [label="Zahlungs-\neingang" shape=box];
+        zahlungsverweigerung [label="Zahlungs-\nverweigerung" shape=box];
+        timer [label="Timer\n(30 Tage)" shape=ellipse];
+        zahlung_verbuchen [label="Zahlung\nverbuchen" shape=box];
+        end2 [label="Ende" shape=ellipse];
+        verweigerung_berechtigt [label="Verweigerung\nberechtigt" shape=box];
+        gw2 [label="" shape=diamond];
+        end3 [label="Ende" shape=ellipse];
+        weiterleitung_inkasso [label="Weiterleitung\nan Inkasso" shape=box];
+    }
+
+    subgraph cluster_inkasso {
+        label="Inkasso";
+        style=dashed;
+
+        inkassoprozess_einleiten [label="Inkassoprozess\neinleiten" shape=box];
+    }
+
+    start -> fall_pruefen;
+    fall_pruefen -> gw1;
+    gw1 -> end1 [label="nein"];
+    gw1 -> zahlungsanforderung;
+    zahlungsanforderung -> zwischenereignis;
+    zwischenereignis -> zahlungsverweigerung;
+    zwischenereignis -> zahlungseingang;
+    zwischenereignis -> timer;
+    zahlungseingang -> zahlung_verbuchen;
+    zahlung_verbuchen -> end2;
+    zahlungsverweigerung -> verweigerung_berechtigt;
+    verweigerung_berechtigt -> gw2;
+    gw2 -> end3;
+    gw2 -> weiterleitung_inkasso;
+    timer -> weiterleitung_inkasso;
+    weiterleitung_inkasso -> inkassoprozess_einleiten;
+}

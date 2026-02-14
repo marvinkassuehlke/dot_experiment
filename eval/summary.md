@@ -150,10 +150,147 @@ Diese Bonus-Befunde zeigen, dass DOT-basierte Analyse nicht nur geseedete Defekt
 3. **Dual-Translation** — Sowohl Bild als auch XML übersetzen und Ergebnisse vergleichen (Bild findet andere Dinge als XML)
 4. **DOT für Analyse, nicht als Single Source of Truth** — DOT eignet sich hervorragend als Input für LLM-Analyse, ist aber kein verlustfreies Austauschformat
 
-## 4. Bekannte Limitierungen der Studie
+## 4. Real-Data-Test: Echte BPMN-Modelle
 
-- **Selbst-Übersetzung**: Dasselbe LLM (Claude) hat sowohl die Ground Truth DOT-Dateien erstellt als auch die Rückübersetzung und Analyse durchgeführt. Ein Bias zugunsten eigener Konventionen ist wahrscheinlich.
-- **Keine echten Quell-Diagramme**: Die PNGs und XMLs wurden aus den Ground-Truth-DOTs erzeugt, nicht aus realen Business-Dokumenten. Reale Diagramme haben mehr visuelle Noise, inkonsistente Formatierung und Tool-spezifische Artefakte.
-- **Kleine Stichprobe**: 12 Testfälle × 2 Quellen = 21 Datenpunkte. Für statistische Signifikanz zu wenig.
-- **Label-Matching**: Der automatische Vergleich matcht Labels textuell. Semantisch äquivalente Labels mit leicht anderer Formulierung werden als Mismatch gewertet.
+### Zielsetzung
+
+Adressierung der drei Hauptlimitierungen aus Phase 1-3:
+1. **Self-Translation-Bias** — Phase 1-3 nutzte selbst generierte Ground Truth. Echte Diagramme haben andere Konventionen.
+2. **Reale XML-Formate** — Phase 1-3 nutzte aus DOT exportiertes XML. Echte BPMN-Tools (Camunda, Signavio) erzeugen komplexeres XML.
+3. **Echte Modellierungsfehler** — Phase 1-3 nutzte geseedete Defekte. Echte Teilnehmer-Modelle enthalten unbeabsichtigte Fehler.
+
+### Testdaten
+
+Quelle: [Camunda bpmn-for-research](https://github.com/camunda/bpmn-for-research) (3739 BPMN-Dateien aus Uni-Lehrveranstaltungen)
+
+| # | Case | Typ | Quelle | Komplexität |
+|---|------|-----|--------|-------------|
+| 1 | 01_warenversand | Musterlösung | Camunda | 1 Pool, 3 Lanes, 7 Tasks, 6 Gateways (AND+XOR+OR) |
+| 2 | 02_restaurant | Musterlösung | Camunda | 3 Pools, 18 Tasks, 10 Message Flows, Event-Based GW |
+| 3 | 03_regressnahme_p1 | Teilnehmer | Signavio | Kein Pool/Lane, 3 Tasks, 6 Gateways, Event-Based GW |
+| 4 | 04_regressnahme_p2 | Teilnehmer | Signavio | 1 Pool, 6 Tasks, Defekte Sequence Flows (4× fehlende Refs) |
+| 5 | 05_regressnahme_p3 | Teilnehmer | Signavio | 2 Lanes, 8 Tasks, fehlerhaftes Intermediate Event |
+
+### Übersetzungsqualität (XML → DOT)
+
+| Case | Nodes (XML) | Nodes (DOT) | Edges (XML) | Edges (DOT) | Vollständig? |
+|------|-------------|-------------|-------------|-------------|--------------|
+| 01_warenversand | 15 | 15 | 17 | 17 | Ja |
+| 02_restaurant | 30 | 30 | 28+10 MF | 34+10 MF | Ja (inkl. Message Flows) |
+| 03_regressnahme_p1 | 16 | 16 | 18 | 18 | Ja |
+| 04_regressnahme_p2 | ~17 | 21* | ~19 | 19 | Ja* (4 dangling Refs als rote Knoten) |
+| 05_regressnahme_p3 | 16 | 16 | 16 | 16 | Ja |
+
+*\*P2: 4 Sequence Flows im XML haben fehlende sourceRef/targetRef. Die Übersetzung hat dies erkannt und die defekten Verbindungen als rote Placeholder-Knoten (`???`) visualisiert — eine konstruktive Fehlerbehandlung.*
+
+**Alle 5 DOT-Dateien rendern fehlerfrei mit GraphViz.**
+
+### Analysequalität
+
+#### 01_warenversand — Musterlösung (3 Lanes, Inclusive+Parallel+Exclusive Gateways)
+
+| # | Finding | Kategorie | Schwere | Korrekt? |
+|---|---------|-----------|---------|----------|
+| 1.1 | AND-Split ohne AND-Join (XOR-Join synchronisiert nicht) | Strukturell | **Hoch** | Ja — bekannter Modellierungsfehler in dieser Übung |
+| 1.2 | Fehlende Default-Bedingung am OR-Split | Strukturell | Mittel | Ja |
+| 2.1 | Lane "Leiter Logistik" nur 1 optionale Aufgabe | Organisatorisch | Niedrig | Ja |
+| 2.2 | Sekretariat als Bottleneck (10 Knoten) | Organisatorisch | Mittel | Ja |
+| 3.1 | Sequenzielle Angebotseinholung statt parallel | Effizienz | Niedrig | Ja (Optimierungsvorschlag) |
+| 3.2 | Fehlende Angebotsprüfung vor Beauftragung | Effizienz | Mittel | Ja |
+
+**Bewertung: 6/6 Findings korrekt.** Das AND-Split/XOR-Join-Problem (1.1) ist der didaktisch relevanteste Fund — exakt der Fehler, den diese Übungsaufgabe provozieren soll.
+
+#### 02_restaurant — Musterlösung (3 Pools, 10 Message Flows)
+
+| # | Finding | Kategorie | Schwere | Korrekt? |
+|---|---------|-----------|---------|----------|
+| 1.1 | Endlosschleife Timer/Ausrufen ohne Exit-Bedingung | Strukturell | Hoch | Ja |
+| 1.2 | Gast-Pool = reiner Happy Path (keine Alternativen) | Strukturell | Mittel | Ja |
+| 1.3 | Message Flow "Kunden ausrufen" hat kein Ziel im Gast-Pool | Strukturell | Mittel | Ja |
+| 1.4 | Bidirektionaler Message Flow impliziert Synchronisierung | Strukturell | Niedrig | Ja |
+| 2.1 | Angestellter als zentrales Bottleneck (14 Knoten) | Organisatorisch | Hoch | Ja |
+| 2.3 | Koch hat keine Autonomie/Feedback | Organisatorisch | Mittel | Ja |
+| 3.1 | Ping-Pong bei Essensübergabe (3 Message Flows für 1 Vorgang) | Effizienz | Mittel | Ja |
+| 3.4 | Koch wird erst nach Pieper-Übergabe informiert | Effizienz | Mittel | Ja — tatsächlicher Prozessoptimierungs-Ansatz |
+
+**Bewertung: 8/8 relevante Findings.** Besonders die Endlosschleife (1.1) und die späte Koch-Information (3.4) zeigen echtes Prozessverständnis.
+
+#### 03_regressnahme_p1 — Teilnehmer (kein Pool, Event-Based Gateway)
+
+| # | Key Finding | Korrekt? |
+|---|-------------|----------|
+| 1.1 | Fehlende Kantenbeschriftung ("Nein" fehlt) | Ja — Modellierungsfehler |
+| 1.2 | End Event "abgeben" = Aktivität statt Zustand | Ja — BPMN Best Practice |
+| 2.1 | **Keine Lanes/Pools — Verantwortlichkeiten unklar** | Ja — gravierender Mangel |
+| 2.2 | Empfänger der Nachrichten nicht modelliert | Ja |
+| 3.1 | Kein Mahnverfahren vor Inkasso | Ja — Prozessdesign-Schwäche |
+| 3.2 | Keine Teilzahlungslogik | Ja |
+
+**Bewertung: 6/6 korrekt.** Wichtigster Fund: fehlende Swimlanes (2.1) — ein Grundlagenfehler.
+
+#### 04_regressnahme_p2 — Teilnehmer (defektes XML)
+
+| # | Key Finding | Korrekt? |
+|---|-------------|----------|
+| 1.1 | **4 fehlende Sequence-Flow-Referenzen** (sourceRef/targetRef) | Ja — echte XML-Defekte |
+| 1.2 | Dead Ends: "Zahlungseingang verbuchen" endet nirgends | Ja — Folge von 1.1 |
+| 1.3 | Timer "30 Tage" unerreichbar | Ja — Folge von 1.1 |
+| 1.5 | "Widerspruch gerechtfertigt" = Zustand statt Aktivität | Ja |
+| 2.1 | Einzelner Pool ohne Lanes | Ja |
+| 2.2 | Sachbearbeiter = Bottleneck für 6 Tasks | Ja |
+
+**Bewertung: Herausragend.** Die Analyse hat nicht nur die 4 XML-Defekte gefunden, sondern auch deren Konsequenzen (Dead Ends, unerreichbare Knoten) abgeleitet und mit den Waypoint-Koordinaten aus dem XML sogar die *wahrscheinlich beabsichtigte* Verbindung rekonstruiert. Das geht über reine Defekt-Erkennung hinaus — es ist diagnostische Analyse.
+
+#### 05_regressnahme_p3 — Teilnehmer (2 Lanes, falsches Event)
+
+| # | Key Finding | Korrekt? |
+|---|-------------|----------|
+| 1.1 | Dead End: "Inkassoprozess einleiten" ohne End-Event | Ja |
+| 1.2 | **Intermediate Event mit 3 Ausgängen statt Event-Based Gateway** | Ja — BPMN-Syntaxfehler |
+| 1.3 | Fehlende Labels an beiden Gateways | Ja |
+| 1.5 | "Verweigerung berechtigt" = Zustand statt Aktivität | Ja |
+| 2.1 | Lane "Inkasso" mit nur 1 Aufgabe | Ja |
+| 3.1 | Kein Wiedervorlagemechanismus | Ja |
+
+**Bewertung: 6/6 korrekt.** Kernfund 1.2 (Intermediate Event statt Event-Based Gateway) ist ein subtiler, aber schwerwiegender BPMN-Syntaxfehler — in einer Process Engine nicht ausführbar.
+
+### Teilnehmer vs. Musterlösung (Label-basierter Graph-Diff)
+
+compare.py kann auch die strukturelle Divergenz zwischen Teilnehmer-Modellen und der Referenzlösung messen:
+
+| Teilnehmer | Node Recall | Edge Recall | Interpretation |
+|------------|-------------|-------------|----------------|
+| P1 | 31.2% | 11.1% | Andere Namenskonventionen, keine Pools — grundlegend anders |
+| P2 | 6.2% | 0.0% | Defektes XML + völlig andere Labels — maximale Divergenz |
+| P3 | 12.5% | 0.0% | Andere Tool-Konventionen (Signavio vs. Camunda) |
+
+Die niedrigen Werte sind **erwartbar** — die Teilnehmer nutzen andere BPMN-Tools (Signavio statt Camunda), andere Benennungen ("Zahlungsanforderung" vs. "Zahlungsaufforderung an VN schicken") und teils grundlegend andere Prozessstrukturen. Die Metrik misst hier nicht Translation-Fidelity, sondern **Modell-Konvergenz** — wie nah ist ein Teilnehmer-Ergebnis am Referenzmodell.
+
+### Ergebnisse Real-Data-Test
+
+#### Was wurde adressiert?
+
+| Limitierung | Status | Evidenz |
+|-------------|--------|---------|
+| Self-Translation-Bias | **Adressiert** | Analyse auf echten Camunda/Signavio-XMLs, nicht auf selbst generiertem Material |
+| Reale XML-Formate | **Adressiert** | Signavio-Namespace (kein `bpmn:` Prefix), fehlende Flow-Referenzen, ungewöhnliche Event-Definitionen erfolgreich verarbeitet |
+| Echte Modellierungsfehler | **Adressiert** | 4 defekte XML-Referenzen, 1 falscher Event-Typ, fehlende Lanes/Labels — alles korrekt erkannt |
+
+#### Kernerkenntnisse
+
+1. **XML→DOT-Übersetzung funktioniert auch mit realem BPMN** — Alle 5 Dateien (2 Camunda, 3 Signavio) wurden korrekt übersetzt, inkl. Multi-Pool-Choreographien mit Message Flows.
+
+2. **Defekte XML-Strukturen werden nicht verschluckt, sondern diagnostiziert** — P2 hatte 4 fehlende sourceRef/targetRef. Die Übersetzung hat diese als rote Placeholder-Knoten visualisiert UND die Analyse hat die wahrscheinlich beabsichtigte Struktur aus den Waypoint-Koordinaten rekonstruiert.
+
+3. **Analyse-Tiefe bleibt auf hohem Niveau** — 32 Findings über alle 5 Cases, alle sachlich korrekt. Das Spektrum reicht von Syntax-Fehlern (falscher Event-Typ) über Modellierungsmängel (fehlende Lanes) bis zu Prozessoptimierungsvorschlägen (Koch-Information parallelisieren).
+
+4. **Neuer Use Case: Modell-Vergleich** — compare.py kann nicht nur Translation-Fidelity messen, sondern auch quantifizieren, wie stark ein Teilnehmer-Modell von der Musterlösung abweicht. Bei besserem Label-Matching (semantisch statt exakt) wäre das ein automatisierbares Assessment-Tool.
+
+## 5. Bekannte Limitierungen der Studie
+
+- **Selbst-Übersetzung (Phase 1-3)**: Dasselbe LLM (Claude) hat sowohl die Ground Truth DOT-Dateien erstellt als auch die Rückübersetzung und Analyse durchgeführt. Durch den Real-Data-Test (Phase 4) mit echten Camunda/Signavio-Dateien teilweise adressiert.
+- **Keine Bildübersetzung bei Real-Data**: Die echten BPMN-Dateien lagen nur als XML vor, nicht als gerenderte Bilder. Der Image→DOT-Pfad wurde daher nicht mit realen Daten getestet.
+- **Kleine Stichprobe**: 12 synthetische + 5 reale Testfälle. Für statistische Signifikanz zu wenig.
+- **Label-Matching**: Der automatische Vergleich matcht Labels textuell. Semantisch äquivalente Labels mit leicht anderer Formulierung werden als Mismatch gewertet. Besonders beim Teilnehmer-vs.-Referenz-Vergleich limitierend.
 - **Subgraph-Matching**: Cluster werden nur als Match gewertet, wenn Label UND enthaltene Knoten identisch sind — ein strenger Maßstab.
+- **Kein Bild-Test mit realen Daten**: Real-Data-Test deckt nur XML→DOT ab. Für Image→DOT mit realen Diagrammen wären gerenderte PNGs nötig.

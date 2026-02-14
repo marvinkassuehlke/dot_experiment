@@ -1,0 +1,58 @@
+digraph Regressnahme {
+    rankdir=LR;
+    fontname="Arial";
+    node [fontname="Arial", fontsize=11];
+    edge [fontname="Arial", fontsize=10];
+
+    // Start Event
+    start [label="Möglicher Regress\nerkannt", shape=ellipse];
+
+    // Tasks
+    regress_pruefen [label="Regress prüfen", shape=box];
+    wiedervorlage [label="Vorgang auf\n\"Wiedervorlage\" setzen", shape=box];
+    widerspruch_pruefen [label="Widerspruch prüfen", shape=box];
+
+    // Exclusive Gateways (diverging)
+    gw_moeglichkeit [label="Möglichkeit\nbesteht?", shape=diamond];
+    gw_gerechtfertigt [label="Gerechtfertigt?", shape=diamond];
+
+    // Exclusive Gateways (converging)
+    gw_merge_end [label="", shape=diamond, width=0.5, height=0.5];
+    gw_merge_inkasso [label="", shape=diamond, width=0.5, height=0.5];
+    gw_merge_vorgang [label="", shape=diamond, width=0.5, height=0.5];
+
+    // Event-based Gateway
+    gw_event [label="", shape=diamond, style=bold, width=0.5, height=0.5];
+
+    // Intermediate Catch Events
+    geld_eingegangen [label="Geld eingegangen", shape=ellipse, style=dashed];
+    frist_abgelaufen [label="Frist abgelaufen", shape=ellipse, style=dashed];
+    widerspruch_eingegangen [label="Widerspruch\neingegangen", shape=ellipse, style=dashed];
+
+    // Intermediate Throw Event
+    zahlungsaufforderung [label="Zahlungsaufforderung\nsenden", shape=ellipse, style=dashed];
+
+    // End Events
+    end_vorgang [label="Vorgang\nschließen", shape=ellipse, peripheries=2];
+    end_inkasso [label="An den Inkasso-\nDienstleister abgeben", shape=ellipse, peripheries=2];
+
+    // Sequence Flows
+    start -> regress_pruefen;
+    regress_pruefen -> gw_moeglichkeit;
+    gw_moeglichkeit -> zahlungsaufforderung [label="Ja"];
+    gw_moeglichkeit -> gw_merge_vorgang;
+    zahlungsaufforderung -> wiedervorlage;
+    wiedervorlage -> gw_event;
+    gw_event -> frist_abgelaufen;
+    gw_event -> widerspruch_eingegangen;
+    gw_event -> geld_eingegangen;
+    geld_eingegangen -> gw_merge_vorgang;
+    frist_abgelaufen -> gw_merge_inkasso;
+    widerspruch_eingegangen -> widerspruch_pruefen;
+    widerspruch_pruefen -> gw_gerechtfertigt;
+    gw_gerechtfertigt -> gw_merge_end [label="Ja"];
+    gw_gerechtfertigt -> gw_merge_inkasso [label="Nein"];
+    gw_merge_vorgang -> gw_merge_end;
+    gw_merge_end -> end_vorgang;
+    gw_merge_inkasso -> end_inkasso;
+}

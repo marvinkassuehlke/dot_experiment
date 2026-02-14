@@ -1,0 +1,146 @@
+// ABOUTME: GraphViz DOT representation of BPMN "Regressnahme Sachbearbeiter" process
+// Translated from regressnahme_reference.xml
+
+digraph Regressnahme {
+    rankdir=LR;
+    fontname="Arial";
+    node [fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9];
+
+    // Pool: Regressnahme Sachbearbeiter
+    subgraph cluster_Participant_11xqomt {
+        label="Regressnahme\nSachbearbeiter";
+        style=solid;
+        color=black;
+
+        // Start Event (Message)
+        StartEvent_1mnut37 [
+            label="Regressverdacht\ngemeldet",
+            shape=ellipse
+        ];
+
+        // Tasks
+        Task_0iirfhd [
+            label="Fall prüfen",
+            shape=box
+        ];
+
+        Task_02fdytg [
+            label="Zahlungsaufforderung\nan VN schicken",
+            shape=box
+        ];
+
+        Task_04aofbe [
+            label="Vorgang\nschließen",
+            shape=box
+        ];
+
+        Task_12lthpj [
+            label="Vorgang auf\nWiedervorlage setzen",
+            shape=box
+        ];
+
+        Task_0eti3m2 [
+            label="Widerspruch\nprüfen",
+            shape=box
+        ];
+
+        Task_1qlbv5i [
+            label="Vorgang\nschließen",
+            shape=box
+        ];
+
+        Task_1w7bb1w [
+            label="Vorgang an Inkasso-\nDienstleister geben",
+            shape=box
+        ];
+
+        Task_1bwmf45 [
+            label="Geldeingang\nverbuchen",
+            shape=box
+        ];
+
+        Task_0yan60f [
+            label="Vorgang\nschließen",
+            shape=box
+        ];
+
+        // Exclusive Gateways
+        ExclusiveGateway_092mc05 [
+            label="Regress\nmöglich?",
+            shape=diamond
+        ];
+
+        ExclusiveGateway_0lk2nir [
+            label="Gerechtfertigt?",
+            shape=diamond
+        ];
+
+        // Event-Based Gateway
+        EventBasedGateway_0qdxz70 [
+            label="",
+            shape=diamond,
+            style=filled,
+            fillcolor=white
+        ];
+
+        // Intermediate Catch Events
+        IntermediateCatchEvent_1ias0p2 [
+            label="Widerspruch\nerhalten",
+            shape=ellipse
+        ];
+
+        IntermediateCatchEvent_037r6f2 [
+            label="Wiedervorlage\nfällig",
+            shape=ellipse
+        ];
+
+        IntermediateCatchEvent_0d430z1 [
+            label="Geld\neingegangen",
+            shape=ellipse
+        ];
+
+        // End Events
+        EndEvent_01a6rq8 [
+            label="Vorgang\ngeschlossen",
+            shape=ellipse
+        ];
+
+        EndEvent_0k9uozu [
+            label="Vorgang\ngeschlossen",
+            shape=ellipse
+        ];
+
+        EndEvent_0nfuudw [
+            label="Vorgang\noffen",
+            shape=ellipse
+        ];
+
+        EndEvent_119yhl0 [
+            label="Vorgang\ngeschlossen",
+            shape=ellipse
+        ];
+
+        // Sequence Flows
+        StartEvent_1mnut37 -> Task_0iirfhd;                                              // SequenceFlow_1jrsqqc
+        Task_0iirfhd -> ExclusiveGateway_092mc05;                                        // SequenceFlow_0h9s0mp
+        ExclusiveGateway_092mc05 -> Task_02fdytg [label="Ja"];                            // SequenceFlow_0pqo7zt
+        ExclusiveGateway_092mc05 -> Task_04aofbe [label="Nein"];                          // SequenceFlow_1qt82pt
+        Task_04aofbe -> EndEvent_01a6rq8;                                                 // SequenceFlow_17ohrlh
+        Task_02fdytg -> Task_12lthpj;                                                     // SequenceFlow_152w54z
+        Task_12lthpj -> EventBasedGateway_0qdxz70;                                       // SequenceFlow_1xvnonz
+        EventBasedGateway_0qdxz70 -> IntermediateCatchEvent_1ias0p2;                      // SequenceFlow_0mbw4et
+        EventBasedGateway_0qdxz70 -> IntermediateCatchEvent_037r6f2;                      // SequenceFlow_024djlt
+        EventBasedGateway_0qdxz70 -> IntermediateCatchEvent_0d430z1;                      // SequenceFlow_02klp91
+        IntermediateCatchEvent_1ias0p2 -> Task_0eti3m2;                                   // SequenceFlow_01w8xpk
+        Task_0eti3m2 -> ExclusiveGateway_0lk2nir;                                        // SequenceFlow_17fk7n7
+        ExclusiveGateway_0lk2nir -> Task_1qlbv5i [label="Ja"];                            // SequenceFlow_1hytpfi
+        ExclusiveGateway_0lk2nir -> Task_1w7bb1w [label="Nein"];                          // SequenceFlow_17yh2em
+        Task_1qlbv5i -> EndEvent_0k9uozu;                                                 // SequenceFlow_1u8uz5a
+        IntermediateCatchEvent_037r6f2 -> Task_1w7bb1w;                                   // SequenceFlow_096z65r
+        Task_1w7bb1w -> EndEvent_0nfuudw;                                                 // SequenceFlow_0ld619c
+        IntermediateCatchEvent_0d430z1 -> Task_1bwmf45;                                   // SequenceFlow_0rng9d2
+        Task_1bwmf45 -> Task_0yan60f;                                                     // SequenceFlow_0krol9j
+        Task_0yan60f -> EndEvent_119yhl0;                                                 // SequenceFlow_1h7edo4
+    }
+}

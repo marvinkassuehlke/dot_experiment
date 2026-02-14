@@ -1,0 +1,87 @@
+digraph Regressnahme {
+    rankdir=LR;
+    compound=true;
+    fontname="Arial";
+    node [fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9];
+
+    subgraph cluster_sachbearbeiter {
+        label="Sachbearbeiter";
+        style=solid;
+
+        // Start Event (Message)
+        start [label="", shape=ellipse, style=filled, fillcolor="#e8f5e9"];
+
+        // Tasks
+        regressfall_pruefen [label="Regressfall prüfen", shape=box];
+        zahlungsaufforderung [label="zahlungsaufforderung\nan VN", shape=box];
+        zahlungseingang_verbuchen [label="Zahlungseingang\nverbuchen", shape=box];
+        wiedervorlage [label="Wiedervorlage\nZahlungsanforderung\nbearbeiten", shape=box];
+        widerspruch_gerechtfertigt [label="Widerspruch\ngerechtfertigt", shape=box];
+        inkasso_auftrag [label="Auftrag an Inkasso\nerstellen", shape=box];
+
+        // Gateways
+        xor_regress_noetig [label="Regress nötig?", shape=diamond];
+        ebg_nach_zahlung [label="", shape=diamond, style=filled, fillcolor="#fff9c4"];
+        xor_nach_widerspruch [label="", shape=diamond];
+        xor_merge_ende [label="", shape=diamond];
+        xor_merge_inkasso [label="", shape=diamond];
+
+        // Intermediate Catch Events
+        timer_30_tage [label="30 Tage", shape=ellipse, style=dashed];
+        msg_vn_widerspricht [label="Vn widerspricht", shape=ellipse, style=dashed];
+        conditional_event [label="", shape=ellipse, style=dashed];
+
+        // End Events
+        end_regress_beendet [label="Regress beendet", shape=ellipse, style=filled, fillcolor="#ffcdd2"];
+        end_inkasso_platziert [label="Auftrag bei\nInkassostelle platziert", shape=ellipse, style=filled, fillcolor="#ffcdd2"];
+
+        // === Sequence Flows ===
+
+        // Hauptpfad
+        start -> regressfall_pruefen;
+        regressfall_pruefen -> xor_regress_noetig;
+        xor_regress_noetig -> zahlungsaufforderung [label="ja"];
+        xor_regress_noetig -> xor_merge_ende [label="nein"];
+        zahlungsaufforderung -> ebg_nach_zahlung;
+
+        // Event-Based Gateway Ausgänge
+        ebg_nach_zahlung -> msg_vn_widerspricht;
+        ebg_nach_zahlung -> conditional_event;
+
+        // DEFEKT: sequenceFlow sid-3821CAD9 hat kein sourceRef
+        // Ziel ist timer_30_tage, aber Quelle fehlt im XML
+        // (Darstellung als Kante von unsichtbarem Knoten)
+        dangling_source [label="??? (kein sourceRef)", shape=plaintext, fontcolor=red];
+        dangling_source -> timer_30_tage [style=dashed, color=red];
+
+        // Pfad nach Timer
+        timer_30_tage -> wiedervorlage;
+        wiedervorlage -> xor_merge_inkasso;
+
+        // Pfad nach Conditional Event
+        conditional_event -> zahlungseingang_verbuchen;
+
+        // DEFEKT: sequenceFlow sid-2EDECBB4 hat kein targetRef
+        // Quelle ist zahlungseingang_verbuchen, Ziel fehlt im XML
+        zahlungseingang_verbuchen -> dangling_target_1 [style=dashed, color=red];
+        dangling_target_1 [label="??? (kein targetRef)", shape=plaintext, fontcolor=red];
+
+        // Pfad nach VN widerspricht
+        msg_vn_widerspricht -> widerspruch_gerechtfertigt;
+        widerspruch_gerechtfertigt -> xor_nach_widerspruch;
+
+        // DEFEKT: sequenceFlow sid-0DF52C12 (label "nein") hat kein targetRef
+        xor_nach_widerspruch -> dangling_target_2 [label="nein", style=dashed, color=red];
+        dangling_target_2 [label="??? (kein targetRef)", shape=plaintext, fontcolor=red];
+
+        // DEFEKT: sequenceFlow sid-6EFCA0DD (label "ja") hat kein targetRef
+        xor_nach_widerspruch -> dangling_target_3 [label="ja", style=dashed, color=red];
+        dangling_target_3 [label="??? (kein targetRef)", shape=plaintext, fontcolor=red];
+
+        // Merge und Ende
+        xor_merge_inkasso -> inkasso_auftrag;
+        inkasso_auftrag -> end_inkasso_platziert;
+        xor_merge_ende -> end_regress_beendet;
+    }
+}
