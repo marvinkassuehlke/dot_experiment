@@ -1,0 +1,174 @@
+audit:
+  artifacts:
+    - id: restaurant
+      source: [bpmn_rendered.png, Selbstbedienungsrestaurant.bpmn]
+      type: bpmn
+
+  findings:
+    - id: F1
+      category: structural
+      severity: high
+      source: both
+      elements: [EventBasedGateway_1qyi8l9, IntermediateCatchEvent_0nhl104, Task_0rpvccw]
+      title: "Endlosschleife im Ausruf-Zyklus ohne Exit-Bedingung"
+      description: "Wenn der Gast nicht auf den Pieper reagiert und auch nicht auf Ausrufen erscheint, gibt es keinen Abbruchpfad. Der Prozess pendelt endlos zwischen 5-Minuten-Timer und Kunden ausrufen."
+
+    - id: F2
+      category: structural
+      severity: high
+      source: direct
+      elements: [Gericht auswaehlen, Bestellung aufgeben]
+      title: "Fehlender Pfad fuer nicht verfuegbare Gerichte oder Bestellaenderungen"
+      description: "Kein Prozessweg vorgesehen, wenn ein Gericht nicht verfuegbar ist oder der Gast die Bestellung aendern moechte. Der Prozess geht linear zur Bezahlung."
+
+    - id: F3
+      category: structural
+      severity: medium
+      source: direct
+      elements: [Betrag bezahlen, Geld kassieren]
+      title: "Kein Fehlerpfad bei Zahlungsproblemen"
+      description: "Keine Modellierung fuer gescheiterte Kartenzahlung, unzureichendes Bargeld oder technische Probleme am Kassensystem."
+
+    - id: F4
+      category: structural
+      severity: medium
+      source: both
+      elements: [Task_0rpvccw, Pool_Gast]
+      title: "Message Flow 'Kunden ausrufen' ohne konkreten Empfaenger im Gast-Pool"
+      description: "Der Message Flow zeigt auf den gesamten Gast-Pool statt auf einen konkreten Catch-Event. Der Gast hat keinen modellierten Reaktionspfad auf das Ausrufen."
+
+    - id: F5
+      category: structural
+      severity: medium
+      source: structural
+      elements: [Task_1ng51gy, Task_12h2fs9]
+      title: "Bidirektionaler Message Flow zwischen Bezahlung und Kassieren semantisch fragwuerdig"
+      description: "Hin- und Rueck-Message-Flow zwischen diesen Tasks suggeriert synchrone Interaktion, die ueber getrennte Send/Receive-Events sauberer modelliert waere."
+
+    - id: F6
+      category: structural
+      severity: high
+      source: structural
+      elements: [IntermediateCatchEvent_1r5wlb4, Task_0o0pue9, IntermediateCatchEvent_1rch6yh, Task_1a48xz1]
+      title: "Inkonsistente Synchronisation beim Essen-Abholen mit zirkulaerer Abhaengigkeit"
+      description: "Der Gast muss abholen damit der Angestellte bemerkt dass er da ist, aber der Angestellte muss das Essen uebergeben damit der Gast es abholen kann. Zirkulaere Message-Flow-Abhaengigkeit."
+
+    - id: F7
+      category: structural
+      severity: medium
+      source: direct
+      elements: [Koch informieren, Mahlzeit zubereiten]
+      title: "Kein Rueckkanal vom Koch bei Zubereitungsproblemen"
+      description: "Koch-Pool hat keine Moeglichkeit, Probleme waehrend der Zubereitung zurueckzumelden (z.B. Zutaten fehlen, Geraeteausfall)."
+
+    - id: F8
+      category: structural
+      severity: medium
+      source: direct
+      elements: [Gast Pool gesamt]
+      title: "Kein Abbruchpfad fuer vorzeitiges Verlassen des Restaurants"
+      description: "Der Gast kann den Prozess nicht vorzeitig abbrechen. Fuehrt bei Abbruch zu inkonsistentem Zustand im Angestellten-Pool."
+
+    - id: F9
+      category: structural
+      severity: low
+      source: structural
+      elements: [IntermediateCatchEvent_1nu2fvu]
+      title: "Intermediate Catch Event 'an der Reihe' ohne korrespondierenden Message Flow"
+      description: "Das Event hat keinen eingehenden Message Flow. Unklar, wer dem Gast signalisiert, dass er an der Reihe ist."
+
+    - id: F10
+      category: structural
+      severity: low
+      source: structural
+      elements: [Pool_Gast, Pool_Angestellter, Pool_Koch]
+      title: "Kein Fehlerbehandlungspfad im gesamten Prozess"
+      description: "Durchgaengig fehlen Error-Events, Compensation-Handler oder Exception-Flows fuer unerwartete Situationen."
+
+    - id: F11
+      category: organizational
+      severity: high
+      source: both
+      elements: [Pool_Angestellter]
+      title: "Angestellter ist Bottleneck mit zu vielen sequenziellen Aufgaben"
+      description: "15 Knoten bzw. 8 separate Taetigkeiten konzentriert in einem Pool. Bei mehreren gleichzeitigen Bestellungen wird der Angestellte zum systemischen Engpass."
+
+    - id: F12
+      category: organizational
+      severity: medium
+      source: structural
+      elements: [Pool_Koch]
+      title: "Koch-Pool stark untermodelliert ohne Fehlerhandling"
+      description: "Rein linearer Ablauf ohne Entscheidungen, Parallelisierung oder Fehlerbehandlung. Keine Priorisierung bei Mehrfachbestellungen."
+
+    - id: F13
+      category: organizational
+      severity: medium
+      source: direct
+      elements: [Kassensystem, Bestellung eingeben, Geld kassieren]
+      title: "Kassensystem-Ausfall nicht behandelt"
+      description: "Kein Fallback-Prozess bei technischen Problemen. Beide kritischen Aktivitaeten haengen vom Kassensystem ab."
+
+    - id: F14
+      category: organizational
+      severity: low
+      source: direct
+      elements: [Essen in Durchreiche stellen, Essen uebergeben]
+      title: "Keine Qualitaetskontrolle bei der Essensausgabe"
+      description: "Kein Pruefschritt ob die richtige Bestellung dem richtigen Gast zugeordnet wird. Verwechslungsgefahr bei hohem Aufkommen."
+
+    - id: F15
+      category: efficiency
+      severity: medium
+      source: both
+      elements: [Geld kassieren, Pieper einstellen, Pieper uebergeben, Koch informieren]
+      title: "Fehlende Parallelisierung zwischen Pieper-Handling und Kuechen-Benachrichtigung"
+      description: "Koch-Information koennte parallel zur Pieper-Ausgabe erfolgen statt sequenziell danach. Die Bestellung ist bereits im Kassensystem erfasst."
+
+    - id: F16
+      category: efficiency
+      severity: medium
+      source: both
+      elements: [Pieper einstellen, Pieper uebergeben, Pieper entgegennehmen]
+      title: "Pieper-Handling verursacht manuellen Overhead"
+      description: "3 separate manuelle Prozessschritte fuer Pieper-Management. Digitale Benachrichtigung (App, Bildschirm) wuerde Durchlaufzeit und Handling-Aufwand reduzieren."
+
+    - id: F17
+      category: efficiency
+      severity: low
+      source: structural
+      elements: [Angestellten informieren, Pieper ausloesen]
+      title: "Ping-Pong zwischen Koch und Angestelltem vermeidbar"
+      description: "Koch informiert Angestellten manuell, der dann Pieper ausloest. Koennte durch direkten Sensor/Knopfdruck am Pieper-System ersetzt werden."
+
+    - id: F18
+      category: efficiency
+      severity: low
+      source: direct
+      elements: [an der Reihe]
+      title: "Wartezeit passiv modelliert ohne Kapazitaetssteuerung"
+      description: "Keine aktive Steuerung der Wartezeit oder Lastverteilung (z.B. zweite Kasse oeffnen bei Stosszeiten)."
+
+    - id: F19
+      category: efficiency
+      severity: low
+      source: direct
+      elements: [Essen in Durchreiche stellen, Essen uebergeben]
+      title: "Doppelter Uebergabeschritt zwischen Kueche und Ausgabe"
+      description: "Bei Self-Service-Konzept koennte der Gast das Essen direkt an einer Ausgabetheke abholen, ohne den Angestellten als Mittelsmann."
+
+  summary:
+    total: 19
+    by_category:
+      structural: 10
+      organizational: 4
+      efficiency: 5
+    by_severity:
+      high: 4
+      medium: 8
+      low: 7
+    by_source:
+      both: 5
+      structural: 5
+      direct: 9
+    overlap_rate: 0.26

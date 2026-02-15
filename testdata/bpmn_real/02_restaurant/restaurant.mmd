@@ -1,0 +1,85 @@
+flowchart LR
+
+  subgraph Pool_Gast ["Gast — Nahrungsaufnahme"]
+    StartEvent_1jrp9jr(["Hunger festgestellt"])
+    Task_1kt8dzo["Restaurant betreten"]
+    Task_1udyby3["Gericht auswählen"]
+    IntermediateCatchEvent_1nu2fvu(["an der Reihe"])
+    Task_0a2rm9v["Bestellung aufgeben"]
+    Task_12h2fs9["Betrag bezahlen"]
+    Task_1jlgbwe["Pieper entgegennehmen"]
+    IntermediateCatchEvent_1r5wlb4(["Essen abholbereit"])
+    Task_0o0pue9["Essen abholen"]
+    Task_07amhtq["Mahlzeit verzehren"]
+    EndEvent_0t0z07x(["Hunger gestillt"])
+
+    StartEvent_1jrp9jr --> Task_1kt8dzo
+    Task_1kt8dzo --> Task_1udyby3
+    Task_1udyby3 --> IntermediateCatchEvent_1nu2fvu
+    IntermediateCatchEvent_1nu2fvu --> Task_0a2rm9v
+    Task_0a2rm9v --> Task_12h2fs9
+    Task_12h2fs9 --> Task_1jlgbwe
+    Task_1jlgbwe --> IntermediateCatchEvent_1r5wlb4
+    IntermediateCatchEvent_1r5wlb4 --> Task_0o0pue9
+    Task_0o0pue9 --> Task_07amhtq
+    Task_07amhtq --> EndEvent_0t0z07x
+  end
+
+  subgraph Pool_Angestellter ["Angestellter — Bestellungsbearbeitung"]
+    StartEvent_02hitoh(["Bestellung erhalten"])
+    Task_1y7mm27["Bestellung eingeben"]
+    Task_1ng51gy["Geld kassieren"]
+    Task_03wsmkw["Pieper einstellen"]
+    Task_0ttgn0d["Pieper übergeben"]
+    Task_1wgretj["Koch informieren"]
+    IntermediateCatchEvent_1pl0nlh(["Essen fertig"])
+    Task_12zp7cy["Pieper auslösen"]
+    EventBasedGateway_1qyi8l9{"Event-Based Gateway"}
+    IntermediateCatchEvent_1rch6yh(["Kunde erscheint"])
+    Task_1a48xz1["Essen übergeben"]
+    EndEvent_1mxdcfl(["Bestellung bearbeitet"])
+    IntermediateCatchEvent_0nhl104(["5 Minuten"])
+    Task_0rpvccw["Kunden ausrufen"]
+
+    StartEvent_02hitoh --> Task_1y7mm27
+    Task_1y7mm27 --> Task_1ng51gy
+    Task_1ng51gy --> Task_03wsmkw
+    Task_03wsmkw --> Task_0ttgn0d
+    Task_0ttgn0d --> Task_1wgretj
+    Task_1wgretj --> IntermediateCatchEvent_1pl0nlh
+    IntermediateCatchEvent_1pl0nlh --> Task_12zp7cy
+    Task_12zp7cy --> EventBasedGateway_1qyi8l9
+    EventBasedGateway_1qyi8l9 --> IntermediateCatchEvent_1rch6yh
+    IntermediateCatchEvent_1rch6yh --> Task_1a48xz1
+    Task_1a48xz1 --> EndEvent_1mxdcfl
+    EventBasedGateway_1qyi8l9 --> IntermediateCatchEvent_0nhl104
+    IntermediateCatchEvent_0nhl104 --> Task_0rpvccw
+    Task_0rpvccw --> EventBasedGateway_1qyi8l9
+
+    Task_1y7mm27 -.- Annotation_Kassensystem["Kassensystem"]
+  end
+
+  subgraph Pool_Koch ["Koch — Mahlzeitzubereitung"]
+    StartEvent_0zymmrx(["Mahlzeit zuzubereiten"])
+    Task_0av6xl6["Mahlzeit zubereiten"]
+    Task_1tdsk5o["Essen in Durchreiche stellen"]
+    Task_0ot5dif["Angestellten informieren"]
+    EndEvent_1pmnzaw(["Mahlzeit zubereitet"])
+
+    StartEvent_0zymmrx --> Task_0av6xl6
+    Task_0av6xl6 --> Task_1tdsk5o
+    Task_1tdsk5o --> Task_0ot5dif
+    Task_0ot5dif --> EndEvent_1pmnzaw
+  end
+
+  %% Message Flows
+  Task_0a2rm9v -.-> StartEvent_02hitoh
+  Task_1ng51gy -.-> Task_12h2fs9
+  Task_12h2fs9 -.-> Task_1ng51gy
+  Task_0ttgn0d -.-> Task_1jlgbwe
+  Task_12zp7cy -.-> IntermediateCatchEvent_1r5wlb4
+  Task_0o0pue9 -.-> IntermediateCatchEvent_1rch6yh
+  Task_1a48xz1 -.-> Task_0o0pue9
+  Task_1wgretj -.-> StartEvent_0zymmrx
+  Task_0ot5dif -.-> IntermediateCatchEvent_1pl0nlh
+  Task_0rpvccw -.-> Pool_Gast
