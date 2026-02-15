@@ -40,6 +40,6 @@ Skill: `/process_audit` — Analysiert Prozessdiagramme via Dual-Perspective-Ana
 /process_audit prozess_a.png prozess_b.bpmn prozess_c.png
 ```
 
-- Skill-Definition: `skills/process_audit/SKILL.md`
+- Skill-Definition: `.claude/skills/process_audit/SKILL.md`
 - Prompt-Templates: `prompts/translate_*_to_mermaid.md`, `prompts/analyze_*.md`, `prompts/synthesize_findings.md`, `prompts/cross_artifact_check.md`
 - Output: `audit_findings.yaml` + `audit_report.md` im Arbeitsverzeichnis
