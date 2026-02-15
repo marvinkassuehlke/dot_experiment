@@ -24,3 +24,22 @@ python eval/compare.py                # Graph-Diff Ground Truth vs. Ergebnis
 - Analysen: `analysis_from_image.md`, `analysis_from_xml.md`
 - Auswertungen: `eval.md` pro Case, `eval/summary.md` gesamt
 - Alle DOT-Dateien nutzen semantische Shapes (diamond=Entscheidung, box=Aktivität, ellipse=Start/End, octagon=Fehler)
+
+## Process Audit Skill
+
+Skill: `/process_audit` — Analysiert Prozessdiagramme via Dual-Perspective-Analyse.
+
+```bash
+# Einzelnes Diagramm (Bild)
+/process_audit testdata/bpmn_real/01_warenversand/bpmn_rendered.png
+
+# Einzelnes Diagramm (XML)
+/process_audit testdata/bpmn_real/01_warenversand/Warenversand.bpmn
+
+# Multi-Artefakt
+/process_audit prozess_a.png prozess_b.bpmn prozess_c.png
+```
+
+- Skill-Definition: `skills/process_audit/SKILL.md`
+- Prompt-Templates: `prompts/translate_*_to_mermaid.md`, `prompts/analyze_*.md`, `prompts/synthesize_findings.md`, `prompts/cross_artifact_check.md`
+- Output: `audit_findings.yaml` + `audit_report.md` im Arbeitsverzeichnis
