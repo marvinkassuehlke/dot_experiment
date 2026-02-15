@@ -1,0 +1,44 @@
+flowchart LR
+    subgraph "Warenversand Hardware-Händler"
+        subgraph "Leiter Logistik"
+            T_versicherung["Versicherung abschließen"]
+        end
+
+        subgraph "Sekretariat"
+            Start(["Artikel zu versenden"])
+            AND_split{AND Split}
+            T_versandart["Versandart klären"]
+            XOR_sonderversand{XOR: Sonderversand?}
+            OR_split{OR Split}
+            T_paketschein["Paketschein ausfüllen"]
+            OR_join{OR Join}
+            T_angebote["Angebote von 3 Spediteuren einholen"]
+            T_spediteur["Spediteur beauftragen"]
+            XOR_join_versand{XOR Join}
+        end
+
+        subgraph "Lagerarbeiter"
+            T_verpacken["Ware verpacken"]
+            XOR_join_final{XOR Join}
+            T_bereitstellen["Ware bereitstellen"]
+            Ende(["Warenversand vorbereitet"])
+        end
+
+        Start --> AND_split
+        AND_split --> T_versandart
+        AND_split --> T_verpacken
+        T_versandart --> XOR_sonderversand
+        XOR_sonderversand -->|nein| OR_split
+        XOR_sonderversand -->|ja| T_angebote
+        OR_split -->|immer| T_paketschein
+        OR_split -->|Versicherung erforderlich| T_versicherung
+        T_paketschein --> OR_join
+        T_versicherung --> OR_join
+        OR_join --> XOR_join_versand
+        T_angebote --> T_spediteur
+        T_spediteur --> XOR_join_versand
+        XOR_join_versand --> XOR_join_final
+        T_verpacken --> XOR_join_final
+        XOR_join_final --> T_bereitstellen
+        T_bereitstellen --> Ende
+    end

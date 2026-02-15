@@ -1,0 +1,148 @@
+audit:
+  artifacts:
+    - id: warenversand
+      source: [bpmn_rendered.png, source.xml]
+      type: bpmn
+  findings:
+    - id: F1
+      category: structural
+      severity: high
+      source: structural
+      elements: ["AND_split (ParallelGateway_02fgrfq)", "XOR_join_final (ExclusiveGateway_0z5sib0)"]
+      title: "AND-Split ohne AND-Join — XOR synchronisiert parallele Pfade nicht"
+      description: >
+        Der Prozess beginnt mit einem AND-Split, der in "Versandart klären" (Sekretariat) und
+        "Ware verpacken" (Lagerarbeiter) forkt. Diese parallelen Pfade werden durch einen
+        XOR-Join zusammengeführt, der bereits beim ersten eintreffenden Token feuert. Dadurch
+        kann "Ware bereitstellen" starten, bevor beide Pfade abgeschlossen sind — z.B. Ware
+        bereitgestellt ohne geklärte Versandart oder ohne Verpackung.
+    - id: F2
+      category: structural
+      severity: medium
+      source: both
+      elements: ["OR_split (InclusiveGateway_0p2e5vq)"]
+      title: "Inklusives Gateway ohne explizite Default-Bedingung"
+      description: >
+        Das inklusive OR-Gateway nach "Sonderversand? = nein" hat Pfade "immer" und
+        "Versicherung erforderlich". Der Pfad "immer" suggeriert ständige Ausführung, aber
+        es fehlt eine formale Default-Bedingung. In einer Prozess-Engine könnte dies zu
+        Laufzeitfehlern führen, wenn Bedingungen nicht korrekt definiert sind.
+    - id: F3
+      category: structural
+      severity: high
+      source: direct
+      elements: ["Gesamter Prozess"]
+      title: "Kein Fehlerbehandlungspfad im gesamten Prozess"
+      description: >
+        Es gibt keinen Fehler- oder Eskalationspfad. Was passiert bei: Spediteur nicht
+        verfügbar, Versicherung abgelehnt, Ware defekt/fehlend? Ein Warenversandprozess
+        ohne Ausnahmebehandlung ist in der Praxis nicht robust.
+    - id: F4
+      category: structural
+      severity: medium
+      source: both
+      elements: ["XOR_sonderversand", "T_angebote", "T_spediteur", "OR_split"]
+      title: "Sonderversand umgeht Paketschein- und Versicherungslogik"
+      description: >
+        Bei "Sonderversand = ja" führt der Pfad direkt zu Angebotseinholung und
+        Spediteurbeauftragung, wobei Paketschein und Versicherungsprüfung komplett
+        übersprungen werden. Dies könnte beabsichtigt sein (Spediteur übernimmt), ist
+        aber nicht dokumentiert und potenziell ein fachlicher Fehler.
+    - id: F5
+      category: organizational
+      severity: medium
+      source: both
+      elements: ["Lane Sekretariat", "T_versandart", "T_angebote", "T_spediteur", "T_paketschein"]
+      title: "Sekretariat als zentrales Bottleneck"
+      description: >
+        Das Sekretariat führt 5 von 7 operativen Aktivitäten aus und enthält 8 der
+        Flow-Knoten des Prozesses. Es verantwortet Versandart-Klärung, Angebotseinholung,
+        Spediteur-Beauftragung und Paketschein-Ausfüllung. Bei hohem Versandvolumen wird
+        es zum Engpass.
+    - id: F6
+      category: organizational
+      severity: low
+      source: both
+      elements: ["Lane Leiter Logistik", "T_versicherung"]
+      title: "Leiter Logistik unterausgelastet"
+      description: >
+        Die Lane "Leiter Logistik" enthält nur eine einzige Aufgabe ("Versicherung
+        abschließen"), die zudem nur bedingt ausgeführt wird (nur bei Versicherungsbedarf
+        und nur bei Normalversand). Eine eigene Lane für eine optionale Aufgabe ist
+        organisatorisch fragwürdig.
+    - id: F7
+      category: organizational
+      severity: low
+      source: direct
+      elements: ["T_spediteur (Spediteur beauftragen)"]
+      title: "Keine Freigabe bei Spediteur-Beauftragung"
+      description: >
+        Die Beauftragung eines Spediteurs (potenziell kostenintensiv) erfolgt direkt
+        durch das Sekretariat ohne Freigabe durch den Leiter Logistik. Bei hohen
+        Versandkosten fehlt ein Vier-Augen-Prinzip.
+    - id: F8
+      category: efficiency
+      severity: high
+      source: both
+      elements: ["T_angebote (Angebote von 3 Spediteuren einholen)"]
+      title: "Sequenzielle Angebotseinholung als Blocker auf dem kritischen Pfad"
+      description: >
+        Das Einholen von drei Spediteursangeboten ist als einzelner sequenzieller Task
+        modelliert und liegt auf dem kritischen Pfad. Die Anfragen könnten parallel
+        gesendet werden. Zudem fehlt jeder Hinweis auf Rahmenverträge — der Prozess
+        suggeriert, dass bei jedem Sonderversand von Null begonnen wird.
+    - id: F9
+      category: efficiency
+      severity: medium
+      source: direct
+      elements: ["AND_split", "T_verpacken", "T_versandart"]
+      title: "Parallelisierung birgt Verpackungsrisiko"
+      description: >
+        Die parallele Ausführung von "Ware verpacken" und "Versandart klären" ist
+        grundsätzlich effizient, aber die Verpackungsart könnte von der Versandart
+        abhängen (z.B. andere Palettierung für Spedition vs. Paketdienst). Der
+        Lagerarbeiter verpackt möglicherweise falsch.
+    - id: F10
+      category: efficiency
+      severity: low
+      source: direct
+      elements: ["T_paketschein", "T_versandart"]
+      title: "Fehlende Automatisierungspotenziale"
+      description: >
+        "Paketschein ausfüllen" und "Versandart klären" sind als manuelle Tasks
+        modelliert. In modernen Logistikprozessen werden Paketscheine automatisch aus
+        dem ERP generiert und die Versandart regelbasiert bestimmt.
+    - id: F11
+      category: efficiency
+      severity: low
+      source: direct
+      elements: ["T_angebote", "T_spediteur"]
+      title: "Kein expliziter Angebotsvergleich vor Beauftragung"
+      description: >
+        Zwischen "Angebote einholen" und "Spediteur beauftragen" fehlt ein expliziter
+        Vergleichs- und Entscheidungsschritt. Die Auswahl des Spediteurs geschieht
+        implizit, was Nachvollziehbarkeit und Transparenz mindert.
+    - id: F12
+      category: efficiency
+      severity: low
+      source: structural
+      elements: ["OR_join (InclusiveGateway_1dgb4sg)", "XOR_join_versand (ExclusiveGateway_1ouv9kf)"]
+      title: "Redundante Gateway-Kette erschwert Lesbarkeit"
+      description: >
+        Die Kette aus Inclusive-OR-Join zu XOR-Join erzeugt eine zusätzliche Indirektion,
+        die den Prozess schwerer lesbar macht, ohne fachlichen Mehrwert zu bieten.
+  summary:
+    total: 12
+    by_category:
+      structural: 4
+      organizational: 3
+      efficiency: 5
+    by_severity:
+      high: 3
+      medium: 4
+      low: 5
+    by_source:
+      both: 5
+      structural: 2
+      direct: 5
+    overlap_rate: 0.42
